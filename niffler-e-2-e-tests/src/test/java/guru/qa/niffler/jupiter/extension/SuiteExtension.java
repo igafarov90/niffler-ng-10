@@ -4,7 +4,6 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 public interface SuiteExtension extends BeforeAllCallback {
-
   /*
   1) Быть уверенными, что SuiteExtension будет выполняться перед каждым тестовым классом
   2) Если мы выполним какой-то код перед загрузкой самого первого тестовго класса, то это и будет beforeSuite().

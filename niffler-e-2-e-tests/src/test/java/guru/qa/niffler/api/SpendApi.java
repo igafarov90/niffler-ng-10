@@ -1,11 +1,39 @@
 package guru.qa.niffler.api;
 
+import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
+import retrofit2.http.*;
+
+import java.util.List;
 
 public interface SpendApi {
-  @POST("internal/spends/add")
-  Call<SpendJson> createSpend(@Body SpendJson spend);
+    @POST("internal/spends/add")
+    Call<SpendJson> createSpend(@Body SpendJson spend);
+
+    @PATCH("internal/spends/edit")
+    Call<SpendJson> editSpend(@Body SpendJson json);
+
+    @GET("internal/spends/{id}")
+    Call<SpendJson> getSpend(@Path("id") String id);
+
+    @GET("internal/spends/all")
+    Call<SpendJson> getAllSpends(@Query("filterCurrency") CurrencyValues filterCurrency,
+                                 @Query("filterPeriod") DataFilterValues dataFilterValues);
+
+    @DELETE("internal/spends/remove")
+    Call<Void> deleteSpends(@Query("ids") List<String> ids);
+
+    @POST("/internal/categories/add")
+    Call<CategoryJson> createCategory(@Body CategoryJson category);
+
+    @PATCH("/internal/categories/update")
+    Call<CategoryJson> updateCategory(@Body CategoryJson category);
+
+    @GET("internal/categories/all")
+    Call<List<CategoryJson>> getAllCategoriesByUsername(@Query("username") String username,
+                                                    @Query("excludeArchived") boolean excludeArchived);
 }
+
