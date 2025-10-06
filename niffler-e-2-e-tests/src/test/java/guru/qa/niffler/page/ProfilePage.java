@@ -33,7 +33,7 @@ public class ProfilePage {
         return this;
     }
 
-    public ProfilePage checkPageHeader(String value){
+    public ProfilePage checkPageHeader(String value) {
         header.shouldHave(text(value));
         return this;
     }
@@ -43,7 +43,7 @@ public class ProfilePage {
         return this;
     }
 
-    public ProfilePage switchToggle(){
+    public ProfilePage switchToggle() {
         toggle.click();
         return this;
     }

@@ -40,6 +40,4 @@ public class MainPage {
     profileItem.click();
     return new ProfilePage();
   }
-
-
 }

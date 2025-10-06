@@ -5,16 +5,15 @@ public class ErrorMessages {
     private static final String PASSWORD_MATCH_ERROR = "Passwords should be equal";
     private static final String BAD_CREDENTIALS_ERROR = "Неверные учетные данные пользователя";
 
-    public final String usernameAlreadyExists(String username) {
+    public static String usernameAlreadyExists(String username) {
         return String.format(USERNAME_EXISTS_ERROR, username);
     }
 
-    public String getPasswordMatchError() {
+    public static String getPasswordMatchError() {
         return PASSWORD_MATCH_ERROR;
     }
 
-    public String getBadCredentialsError(){
+    public static String getBadCredentialsError(){
         return BAD_CREDENTIALS_ERROR;
     }
-
 }

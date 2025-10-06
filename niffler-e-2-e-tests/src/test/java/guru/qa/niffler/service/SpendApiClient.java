@@ -14,8 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.apache.hc.core5.http.HttpStatus.SC_ACCEPTED;
-import static org.apache.hc.core5.http.HttpStatus.SC_OK;
+import static org.apache.hc.core5.http.HttpStatus.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpendApiClient implements SpendClient {
@@ -64,9 +63,8 @@ public class SpendApiClient implements SpendClient {
         } catch (Exception e) {
             throw new AssertionError(e);
         }
-        assertEquals(SC_ACCEPTED, response.code());
+        assertEquals(SC_CREATED, response.code());
         return response.body();
-
     }
 
     @Override
@@ -91,7 +89,7 @@ public class SpendApiClient implements SpendClient {
         } catch (Exception e) {
             throw new AssertionError(e);
         }
-        assertEquals(SC_OK, response.code());
+        assertEquals(SC_ACCEPTED, response.code());
     }
 
     public CategoryJson createCategory(CategoryJson category) {
@@ -129,7 +127,6 @@ public class SpendApiClient implements SpendClient {
         assertEquals(SC_OK, response.code());
         return response.body();
     }
-
 
     public Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username) {
         throw new UnsupportedOperationException("Not implemented :(");

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(BrowserExtension.class)
 public class RegistrationTest {
     private final Faker faker = new Faker();
-    private final ErrorMessages errorMessages = new ErrorMessages();
 
     private static final String SUCCESS_REGISTER_MESSAGE = "Congratulations! You've registered!";
     private static final String EXISTING_USER = "iegafarov";
@@ -39,7 +38,7 @@ public class RegistrationTest {
     void shouldNotRegisterUserWithExistingUsername(){
         String password = faker.internet().password();
         registerPage.fillAndSubmitRegisterForm(EXISTING_USER, password);
-        String message = errorMessages.usernameAlreadyExists(EXISTING_USER);
+        String message = ErrorMessages.usernameAlreadyExists(EXISTING_USER);
         registerPage.checkHelperMessage(message);
     }
 
@@ -52,9 +51,7 @@ public class RegistrationTest {
                 .setPassword(password)
                 .setUsername(username)
                 .clickSignUp();
-        String message = errorMessages.getPasswordMatchError();
+        String message = ErrorMessages.getPasswordMatchError();
         registerPage.checkHelperMessage(message);
     }
-
-
 }

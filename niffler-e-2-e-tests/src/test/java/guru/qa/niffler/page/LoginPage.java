@@ -11,7 +11,7 @@ public class LoginPage {
   private final SelenideElement submitBtn = $("#login-button");
   private final SelenideElement registerBtn = $("#register-button");
   private final SelenideElement header = $("h1");
-  private final SelenideElement helperMessage = $(".form__error");
+  private final SelenideElement errorMessage = $(".form__error");
 
   public MainPage login(String username, String password) {
     usernameInput.val(username);
@@ -37,8 +37,8 @@ public class LoginPage {
     return this;
   }
 
-  public LoginPage checkHelperMessage(String value){
-    helperMessage.shouldHave(text(value));
+  public LoginPage checkErrorMessage(String value){
+    errorMessage.shouldHave(text(value));
     return this;
   }
 }

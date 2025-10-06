@@ -15,22 +15,22 @@ public class RegisterPage {
     private final SelenideElement helperText = $(".form__error");
 
 
-    public RegisterPage setUsername(String username){
+    public RegisterPage setUsername(String username) {
         usernameInput.val(username);
-    return this;
+        return this;
     }
 
-    public RegisterPage setPassword(String password){
+    public RegisterPage setPassword(String password) {
         passwordInput.val(password);
-    return this;
+        return this;
     }
 
-    public RegisterPage setSubmitPassword(String password){
+    public RegisterPage setSubmitPassword(String password) {
         passwordSubmitInput.val(password);
-    return this;
+        return this;
     }
 
-    public void clickSignUp(){
+    public void clickSignUp() {
         signUpBtn.click();
     }
 
@@ -42,20 +42,18 @@ public class RegisterPage {
         return this;
     }
 
-    public RegisterPage checkSuccessRegisterMessage(String value){
+    public RegisterPage checkSuccessRegisterMessage(String value) {
         successRegisterMessage.shouldHave(text(value));
-    return this;
+        return this;
     }
 
-    public LoginPage submitRegistration(){
+    public LoginPage submitRegistration() {
         signInBtn.click();
         return new LoginPage();
     }
 
-    public RegisterPage checkHelperMessage(String value){
+    public RegisterPage checkHelperMessage(String value) {
         helperText.shouldHave(text(value));
         return this;
     }
-
-
 }
