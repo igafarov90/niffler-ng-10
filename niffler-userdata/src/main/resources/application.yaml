@@ -52,7 +52,7 @@ spring:
       - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
-    bootstrap-servers: 'localhost:9092'
+    bootstrap-servers: 'localhost:9094'
     consumer:
       group-id: 'userdata'
       auto-offset-reset: earliest
@@ -76,7 +76,7 @@ spring:
       - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
-    bootstrap-servers: 'kafka:9092'
+    bootstrap-servers: 'kafka:9094'
     consumer:
       group-id: 'userdata'
       auto-offset-reset: earliest
