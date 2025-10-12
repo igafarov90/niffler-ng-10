@@ -14,6 +14,7 @@ public class MainPage {
           $(byTagAndText("h2", "History of Spendings"));
   private final SelenideElement profileIcon = $("[data-testid='PersonIcon']");
   private final SelenideElement profileItem = $("a[href='/profile']");
+  private final SelenideElement friendsItem = $("a[href='/people/friends']");
 
   public MainPage checkThatPageLoaded() {
     spendingTable.should(visible);
@@ -39,5 +40,11 @@ public class MainPage {
     profileIcon.click();
     profileItem.click();
     return new ProfilePage();
+  }
+
+  public FriendsPage openFriendsPage(){
+    profileIcon.click();
+    friendsItem.click();
+    return new FriendsPage();
   }
 }

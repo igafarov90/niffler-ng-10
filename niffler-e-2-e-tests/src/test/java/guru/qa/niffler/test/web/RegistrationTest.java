@@ -36,7 +36,7 @@ public class RegistrationTest {
 
     @Test
     void shouldNotRegisterUserWithExistingUsername(){
-        String password = faker.internet().password();
+        String password = faker.internet().password(3,12);
         registerPage.fillAndSubmitRegisterForm(EXISTING_USER, password);
         String message = ErrorMessages.usernameAlreadyExists(EXISTING_USER);
         registerPage.checkHelperMessage(message);
