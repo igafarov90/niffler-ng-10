@@ -6,13 +6,13 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.helpers.ErrorMessages;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(BrowserExtension.class)
 public class LoginTest {
-    private final Faker faker = new Faker();
 
     private final static String USER_NAME = "iegafarov";
     private final static String PASSWORD = "iegafarov";
@@ -36,7 +36,7 @@ public class LoginTest {
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
-        String fakePassword = faker.internet().password();
+        String fakePassword = RandomDataUtils.randomPassword(3,12);
         loginPage = loginPage.loginWithError(USER_NAME, fakePassword)
                 .checkPageHeader(HEADER)
                 .checkErrorMessage(ErrorMessages.getBadCredentialsError());

@@ -2,6 +2,7 @@ package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.CategoryExtension;
 import guru.qa.niffler.model.CategoryJson;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 
 @ExtendWith({BrowserExtension.class, CategoryExtension.class})
 public class ProfileTest {
@@ -30,9 +32,11 @@ public class ProfileTest {
                 .checkPageHeader(HEADER);
     }
 
-    @Category(
+    @User(
             username = USERNAME,
-            archived = true
+            categories = {
+                    @Category(archived = true)
+            }
     )
     @Test
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
@@ -40,8 +44,11 @@ public class ProfileTest {
         profilePage.checkCategoryExists(category.name());
     }
 
-    @Category(
-            username = USERNAME
+    @User(
+            username = USERNAME,
+            categories = {
+                    @Category()
+            }
     )
     @Test
     void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
