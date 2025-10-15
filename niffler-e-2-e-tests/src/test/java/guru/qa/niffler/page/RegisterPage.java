@@ -11,7 +11,7 @@ public class RegisterPage {
     private final SelenideElement passwordSubmitInput = $("#passwordSubmit");
     private final SelenideElement signUpBtn = $("#register-button");
     private final SelenideElement signInBtn = $("#register-button");
-    private final SelenideElement successRegisterMessage = $(".form__paragraph_success");
+    private final SelenideElement successRegisterMessage = $(".form__paragraph.form__paragraph_success");
     private final SelenideElement helperText = $(".form__error");
 
 

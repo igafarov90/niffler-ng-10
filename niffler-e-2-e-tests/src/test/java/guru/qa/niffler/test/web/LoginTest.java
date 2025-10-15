@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(BrowserExtension.class)
 public class LoginTest {
     private final Faker faker = new Faker();
-    private final ErrorMessages errorMessages = new ErrorMessages();
 
     private final static String USER_NAME = "iegafarov";
     private final static String PASSWORD = "iegafarov";
@@ -40,6 +39,6 @@ public class LoginTest {
         String fakePassword = faker.internet().password();
         loginPage = loginPage.loginWithError(USER_NAME, fakePassword)
                 .checkPageHeader(HEADER)
-                .checkHelperMessage(errorMessages.getBadCredentialsError());
+                .checkErrorMessage(ErrorMessages.getBadCredentialsError());
     }
 }
