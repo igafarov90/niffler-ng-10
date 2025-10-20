@@ -7,6 +7,7 @@ import guru.qa.niffler.model.SpendJson;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface SpendClient {
     SpendJson getSpend(String id);
@@ -22,4 +23,10 @@ public interface SpendClient {
     CategoryJson createCategory(CategoryJson category);
 
     Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username);
+
+    Optional<CategoryJson> findCategoryById(UUID id);
+
+    CategoryJson updateCategory(CategoryJson updateJson);
+
+    void deleteCategory(CategoryJson json);
 }

@@ -13,6 +13,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.apache.hc.core5.http.HttpStatus.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -104,7 +105,7 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    public Response<CategoryJson> updateCategory(CategoryJson category) {
+    public CategoryJson updateCategory(CategoryJson category) {
         final Response<CategoryJson> response;
         try {
             response = spendApi.updateCategory(category)
@@ -113,7 +114,12 @@ public class SpendApiClient implements SpendClient {
             throw new AssertionError(e);
         }
         assertEquals(SC_OK, response.code());
-        return response;
+        return response.body();
+    }
+
+    @Override
+    public void deleteCategory(CategoryJson json) {
+
     }
 
     public List<CategoryJson> getAllCategories(String username, boolean excludeArchive) {
@@ -130,5 +136,10 @@ public class SpendApiClient implements SpendClient {
 
     public Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username) {
         throw new UnsupportedOperationException("Not implemented :(");
+    }
+
+    @Override
+    public Optional<CategoryJson> findCategoryById(UUID id) {
+        return Optional.empty();
     }
 }
