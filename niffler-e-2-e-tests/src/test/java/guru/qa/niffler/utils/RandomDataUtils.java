@@ -28,8 +28,4 @@ public class RandomDataUtils {
     public static String randomPassword(int min, int max) {
         return faker.internet().password(min, max);
     }
-
-    public static String randomCategory(int min, int max) {
-        return faker.internet().password(min, max);
-    }
 }

@@ -28,13 +28,29 @@ enum LocalConfig implements Config {
         return "http://localhost:8093/";
     }
 
-    @Override
-    public String spendJdbcUrl() {
-        return "jdbc:postgresql://localhost:5432/niffler-spend";
-    }
 
     @Override
     public String githubUrl() {
         return "https://api.github.com/";
+    }
+
+    @Override
+    public String authJdbcUrl() {
+        return "jdbc:postgresql://localhost:5432/niffler-auth";
+    }
+
+    @Override
+    public String userdataJdbcUrl() {
+        return "jdbc:postgresql://localhost:5432/niffler-userdata";
+    }
+
+    @Override
+    public String currencyJdbcUrl() {
+        return "jdbc:postgresql://localhost:5432/niffler-currency";
+    }
+
+    @Override
+    public String spendJdbcUrl() {
+        return "jdbc:postgresql://localhost:5432/niffler-spend";
     }
 }

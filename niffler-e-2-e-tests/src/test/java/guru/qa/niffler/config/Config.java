@@ -16,4 +16,7 @@ public interface Config {
   String spendJdbcUrl();
 
   String githubUrl();
+  String authJdbcUrl();
+  String userdataJdbcUrl();
+  String currencyJdbcUrl();
 }

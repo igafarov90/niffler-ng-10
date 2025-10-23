@@ -6,6 +6,8 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendApiClient;
 import guru.qa.niffler.service.SpendClient;
+import guru.qa.niffler.service.SpendDbClient;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
@@ -15,7 +17,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
 
-    private final SpendClient spendApiClient = new SpendApiClient();
+    private final SpendClient spendClient = new SpendDbClient();
 
     @Override
     public void beforeEach(ExtensionContext context) {
@@ -28,19 +30,19 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                     if (spendings.length > 0) {
                         Spending spendingAnnotation = spendings[0];
 
-                        final SpendJson created = spendApiClient.createSpend(
+                        final SpendJson created = spendClient.createSpend(
                                 new SpendJson(
                                         null,
                                         new Date(),
                                         new CategoryJson(
                                                 null,
-                                                spendingAnnotation.category(),
+                                                RandomDataUtils.randomCategoryName(),
                                                 userAnnotation.username(),
                                                 false
                                         ),
                                         spendingAnnotation.currency(),
                                         spendingAnnotation.amount(),
-                                        spendingAnnotation.description(),
+                                        RandomDataUtils.randomSentence(3),
                                         userAnnotation.username()
                                 )
                         );
