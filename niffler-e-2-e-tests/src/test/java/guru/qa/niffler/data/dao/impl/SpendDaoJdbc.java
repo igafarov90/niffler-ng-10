@@ -47,7 +47,7 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
-    public Optional<SpendEntity> findSpendById(UUID id) {
+    public Optional<SpendEntity> findById(UUID id) {
         try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "SELECT * FROM spend WHERE id = ?"
@@ -62,9 +62,9 @@ public class SpendDaoJdbc implements SpendDao {
                         se.setUsername(rs.getString("username"));
                         se.setCurrency(
                                 CurrencyValues.valueOf(rs.getString("currency")));
-                        se.setSpendDate(rs.getDate("spendDate"));
+                        se.setSpendDate(rs.getDate("spend_date"));
                         se.setAmount(rs.getDouble("amount"));
-                        se.setDescription(rs.getString("username"));
+                        se.setDescription(rs.getString("description"));
                         se.setCategory(ce);
                         return Optional.of(se);
                     } else {
@@ -78,7 +78,7 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
-    public void deleteSpend(SpendEntity spend) {
+    public void delete(SpendEntity spend) {
         try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "DELETE FROM spend WHERE id = ?"

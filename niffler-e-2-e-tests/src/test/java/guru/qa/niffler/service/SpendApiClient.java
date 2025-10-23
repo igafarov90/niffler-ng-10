@@ -119,7 +119,7 @@ public class SpendApiClient implements SpendClient {
 
     @Override
     public void deleteCategory(CategoryJson json) {
-
+        throw new UnsupportedOperationException("Not implemented :(");
     }
 
     public List<CategoryJson> getAllCategories(String username, boolean excludeArchive) {
@@ -140,6 +140,6 @@ public class SpendApiClient implements SpendClient {
 
     @Override
     public Optional<CategoryJson> findCategoryById(UUID id) {
-        return Optional.empty();
+        throw new UnsupportedOperationException("Not implemented :(");
     }
 }

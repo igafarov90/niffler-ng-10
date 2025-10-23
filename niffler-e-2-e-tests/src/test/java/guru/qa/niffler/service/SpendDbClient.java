@@ -22,12 +22,12 @@ public class SpendDbClient implements SpendClient {
 
     @Override
     public SpendJson getSpend(String id) {
-        return null;
+        throw new UnsupportedOperationException("Not implemented :(");
     }
 
     @Override
     public SpendJson getAllSpends(CurrencyValues filterCurrency, DataFilterValues dataFilterValues) {
-        return null;
+        throw new UnsupportedOperationException("Not implemented :(");
     }
 
     @Override
@@ -51,33 +51,34 @@ public class SpendDbClient implements SpendClient {
 
     @Override
     public SpendJson editSpend(SpendJson spend) {
-        return null;
+        throw new UnsupportedOperationException("Not implemented :(");
     }
 
     @Override
     public void deleteSpend(List<String> ids) {
-
+        throw new UnsupportedOperationException("Not implemented :(");
     }
 
     @Override
-    public Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username) {
-        return Optional.empty();
+    public Optional<CategoryJson> findCategoryByNameAndUsername(String username, String categoryName) {
+        Optional<CategoryEntity> categoryEntity = categoryDao.findByUsernameAndCategoryName(username, categoryName);
+        return categoryEntity.map(CategoryJson::fromEntity);
     }
 
     @Override
     public Optional<CategoryJson> findCategoryById(UUID id) {
-        Optional<CategoryEntity> categoryEntity = categoryDao.findCategoryById(id);
+        Optional<CategoryEntity> categoryEntity = categoryDao.findById(id);
         return categoryEntity.map(CategoryJson::fromEntity);
     }
 
     @Override
     public CategoryJson updateCategory(CategoryJson updateJson) {
-        return null;
+        throw new UnsupportedOperationException("Not implemented :(");
     }
 
     @Override
     public void deleteCategory(CategoryJson category) {
         CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
-        categoryDao.deleteCategory(categoryEntity);
+        categoryDao.delete(categoryEntity);
     }
 }
