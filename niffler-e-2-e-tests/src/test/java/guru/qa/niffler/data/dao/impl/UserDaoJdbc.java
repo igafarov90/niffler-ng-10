@@ -18,7 +18,7 @@ public class UserDaoJdbc implements UserDao {
     private static final Logger logger = LoggerFactory.getLogger(SpendDaoJdbc.class);
 
     @Override
-    public UserEntity createUser(UserEntity user) {
+    public UserEntity create(UserEntity user) {
         try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO public.user(username, currency, firstname, surname, photo, photo_small, full_name)" +
@@ -47,7 +47,7 @@ public class UserDaoJdbc implements UserDao {
     }
 
     @Override
-    public Optional<UserEntity> findUserByUsername(String username) {
+    public Optional<UserEntity> findByUsername(String username) {
         try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "SELECT * FROM public.user WHERE username = ?"
@@ -64,7 +64,7 @@ public class UserDaoJdbc implements UserDao {
                         ue.setSurname(rs.getString("surname"));
                         ue.setPhoto(rs.getBytes("photo"));
                         ue.setPhotoSmall(rs.getBytes("photo_small"));
-                        ue.setFullname(rs.getString("fullname"));
+                        ue.setFullname(rs.getString("full_name"));
                         return Optional.of(ue);
                     } else {
                         return Optional.empty();
@@ -74,11 +74,10 @@ public class UserDaoJdbc implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
-    public Optional<UserEntity> findUserById(UUID id) {
+    public Optional<UserEntity> findById(UUID id) {
         try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "SELECT * FROM public.user WHERE id = ?"
@@ -95,7 +94,7 @@ public class UserDaoJdbc implements UserDao {
                         ue.setSurname(rs.getString("surname"));
                         ue.setPhoto(rs.getBytes("photo"));
                         ue.setPhotoSmall(rs.getBytes("photo_small"));
-                        ue.setFullname(rs.getString("fullname"));
+                        ue.setFullname(rs.getString("full_name"));
                         return Optional.of(ue);
                     } else {
                         return Optional.empty();
@@ -105,11 +104,10 @@ public class UserDaoJdbc implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
-    public void deleteUser(UserEntity user) {
+    public void delete(UserEntity user) {
         try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "DELETE FROM public.user WHERE id = ?"
