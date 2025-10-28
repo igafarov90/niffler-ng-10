@@ -83,7 +83,7 @@ public class JdbcTest {
     }
 
     @Test
-    void shouldRollbackWhenDeletingUserWithExistingAuthorities() {
+    void shouldRollbackWhenDeletingUserHasExistingAuthorities() {
         AuthUserEntity authUserEntity = new AuthUserEntity();
         authUserEntity.setUsername("test-true");
         authUserEntity.setPassword("1258");

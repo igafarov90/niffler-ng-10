@@ -32,9 +32,14 @@ public class Databases {
     }
 
     public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+        return transaction(function, jdbcUrl, Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, int isolationLvl) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLvl);
             connection.setAutoCommit(false);
             T result = function.apply(connection);
             connection.commit();
@@ -54,11 +59,17 @@ public class Databases {
     }
 
     public static <T> T xaTransaction(XaFunction<T>... actions) {
+        return xaTransaction(Connection.TRANSACTION_READ_COMMITTED, actions);
+    }
+
+    public static <T> T xaTransaction(int isolationLvl, XaFunction<T>... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
             T result = null;
             for (XaFunction<T> action : actions) {
+                Connection conn = getNewConnection(action.jdbcUrl);
+                conn.setTransactionIsolation(isolationLvl);
                 result = action.function.apply(connection(action.jdbcUrl));
             }
             ut.commit();
@@ -74,9 +85,14 @@ public class Databases {
     }
 
     public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+        transaction(consumer, jdbcUrl, Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+    public static void transaction(Consumer<Connection> consumer, String jdbcUrl, int isolationLvl) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLvl);
             connection.setAutoCommit(false);
             consumer.accept(connection);
             connection.commit();
@@ -95,10 +111,16 @@ public class Databases {
     }
 
     public static void xaTransaction(XaConsumer... actions) {
+        xaTransaction(Connection.TRANSACTION_REPEATABLE_READ, actions);
+    }
+
+    public static void xaTransaction(int isolationLvl, XaConsumer... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
             for (XaConsumer action : actions) {
+                Connection conn = getNewConnection(action.jdbcUrl);
+                conn.setTransactionIsolation(isolationLvl);
                 action.function.accept(connection(action.jdbcUrl));
             }
             ut.commit();
@@ -125,6 +147,7 @@ public class Databases {
                     props.put("user", "postgres");
                     props.put("password", "secret");
                     dsBean.setXaProperties(props);
+                    dsBean.setPoolSize(10);
                     return dsBean;
                 }
         );
@@ -167,5 +190,9 @@ public class Databases {
                 }
             }
         }
+    }
+
+    private static Connection getNewConnection(String jdbcUrl) throws SQLException {
+        return dataSource(jdbcUrl).getConnection();
     }
 }
