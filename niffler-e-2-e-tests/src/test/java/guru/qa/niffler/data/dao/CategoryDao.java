@@ -15,5 +15,5 @@ public interface CategoryDao {
 
     void delete(CategoryEntity category);
 
-    List<CategoryEntity> findAllByUserName(String username);
+    List<CategoryEntity> findAllByUsername(String username);
 }

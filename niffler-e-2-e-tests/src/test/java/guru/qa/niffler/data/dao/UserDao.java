@@ -13,4 +13,6 @@ public interface UserDao {
     Optional<UserEntity> findById(UUID id);
 
     void delete(UserEntity user);
+
+    UserEntity update(UserEntity user);
 }
