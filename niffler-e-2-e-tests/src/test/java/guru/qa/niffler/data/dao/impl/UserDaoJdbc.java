@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -105,7 +107,7 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public UserEntity update(UserEntity user) {
-        return user;
+        throw new UnsupportedOperationException("Not implemented :(");
     }
 
     @Override
@@ -124,5 +126,28 @@ public class UserDaoJdbc implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        List<UserEntity> users = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM public.user")) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    UserEntity ue = new UserEntity();
+                    ue.setId(rs.getObject("id", UUID.class));
+                    ue.setUsername(rs.getString("username"));
+                    ue.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    ue.setFirstname(rs.getString("firstname"));
+                    ue.setSurname(rs.getString("surname"));
+                    ue.setPhoto(rs.getBytes("photo"));
+                    ue.setPhotoSmall(rs.getBytes("photo_small"));
+                    ue.setFullname(rs.getString("fullname"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return users;
     }
 }

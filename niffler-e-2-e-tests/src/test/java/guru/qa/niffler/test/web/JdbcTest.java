@@ -7,7 +7,10 @@ import guru.qa.niffler.data.dao.impl.AuthUserDaoJdbc;
 import guru.qa.niffler.data.entity.AuthUserEntity;
 import guru.qa.niffler.data.entity.Authority;
 import guru.qa.niffler.data.entity.AuthorityEntity;
+import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
+import guru.qa.niffler.service.UsersDbClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -116,6 +119,42 @@ public class JdbcTest {
                 },
                         CFG.authJdbcUrl())
         );
+    }
+
+    @Test
+    void createUserSpringJdbcTest() {
+        UsersDbClient usersDbClient = new UsersDbClient();
+        UserJson user = usersDbClient.createUserSpringJdbc(
+                new UserJson(
+                        null,
+                        "valentin-2",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        "null",
+                        "null"
+                )
+        );
+        System.out.println(user);
+    }
+
+    @Test
+    void createUserJdbcTest() {
+        UsersDbClient usersDbClient = new UsersDbClient();
+        UserJson user = usersDbClient.createUser(
+                new UserJson(
+                        null,
+                        "valentin-5",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        "null",
+                        "null"
+                )
+        );
+        System.out.println(user);
     }
 }
 

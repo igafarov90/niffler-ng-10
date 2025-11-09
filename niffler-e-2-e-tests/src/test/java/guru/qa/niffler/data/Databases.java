@@ -20,32 +20,30 @@ public class Databases {
     private Databases() {
     }
 
-    private static Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
-    private static Map<Long, Map<String, Connection>> threadConnections = new ConcurrentHashMap<>();
+    private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
+    private static final Map<Long, Map<String, Connection>> threadConnections = new ConcurrentHashMap<>();
 
     public record XaFunction<T>(Function<Connection, T> function, String jdbcUrl) {
-
     }
 
     public record XaConsumer(Consumer<Connection> function, String jdbcUrl) {
-
     }
 
     public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
         return transaction(function, jdbcUrl, Connection.TRANSACTION_READ_COMMITTED);
     }
 
-    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, int isolationLvl) {
+    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, int isolationLevel) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
-            connection.setTransactionIsolation(isolationLvl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);
             T result = function.apply(connection);
             connection.commit();
             connection.setAutoCommit(true);
             return result;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             if (connection != null) {
                 try {
                     connection.rollback();
@@ -58,19 +56,21 @@ public class Databases {
         }
     }
 
+    @SafeVarargs
     public static <T> T xaTransaction(XaFunction<T>... actions) {
         return xaTransaction(Connection.TRANSACTION_READ_COMMITTED, actions);
     }
 
-    public static <T> T xaTransaction(int isolationLvl, XaFunction<T>... actions) {
+    @SafeVarargs
+    public static <T> T xaTransaction(int isolationLevel, XaFunction<T>... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
             T result = null;
             for (XaFunction<T> action : actions) {
-                Connection conn = getNewConnection(action.jdbcUrl);
-                conn.setTransactionIsolation(isolationLvl);
-                result = action.function.apply(connection(action.jdbcUrl));
+                Connection conn = connection(action.jdbcUrl);
+                conn.setTransactionIsolation(isolationLevel);
+                result = action.function.apply(conn);
             }
             ut.commit();
             return result;
@@ -84,20 +84,21 @@ public class Databases {
         }
     }
 
+
     public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
         transaction(consumer, jdbcUrl, Connection.TRANSACTION_READ_COMMITTED);
     }
 
-    public static void transaction(Consumer<Connection> consumer, String jdbcUrl, int isolationLvl) {
+    public static void transaction(Consumer<Connection> consumer, String jdbcUrl, int isolationLevel) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
-            connection.setTransactionIsolation(isolationLvl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);
             consumer.accept(connection);
             connection.commit();
             connection.setAutoCommit(true);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             if (connection != null) {
                 try {
                     connection.rollback();
@@ -111,17 +112,17 @@ public class Databases {
     }
 
     public static void xaTransaction(XaConsumer... actions) {
-        xaTransaction(Connection.TRANSACTION_REPEATABLE_READ, actions);
+        xaTransaction(Connection.TRANSACTION_READ_COMMITTED, actions);
     }
 
-    public static void xaTransaction(int isolationLvl, XaConsumer... actions) {
+    public static void xaTransaction(int isolationLevel, XaConsumer... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
             for (XaConsumer action : actions) {
-                Connection conn = getNewConnection(action.jdbcUrl);
-                conn.setTransactionIsolation(isolationLvl);
-                action.function.accept(connection(action.jdbcUrl));
+                Connection conn = connection(action.jdbcUrl);
+                conn.setTransactionIsolation(isolationLevel);
+                action.function.accept(conn);
             }
             ut.commit();
         } catch (Exception e) {
@@ -134,20 +135,20 @@ public class Databases {
         }
     }
 
-    private static DataSource dataSource(String jdbcUrl) {
+    public static DataSource dataSource(String jdbcUrl) {
         return dataSources.computeIfAbsent(
                 jdbcUrl,
                 key -> {
                     AtomikosDataSourceBean dsBean = new AtomikosDataSourceBean();
-                    final String uniqueId = StringUtils.substringAfter(jdbcUrl, "5432/");
-                    dsBean.setUniqueResourceName(uniqueId);
+                    final String uniqId = StringUtils.substringAfter(jdbcUrl, "5432/");
+                    dsBean.setUniqueResourceName(uniqId);
                     dsBean.setXaDataSourceClassName("org.postgresql.xa.PGXADataSource");
                     Properties props = new Properties();
                     props.put("URL", jdbcUrl);
                     props.put("user", "postgres");
                     props.put("password", "secret");
                     dsBean.setXaProperties(props);
-                    dsBean.setPoolSize(10);
+                    dsBean.setMaxPoolSize(10);
                     return dsBean;
                 }
         );
@@ -186,13 +187,9 @@ public class Databases {
                         connection.close();
                     }
                 } catch (SQLException e) {
-                    //NOP
+                    // NOP
                 }
             }
         }
-    }
-
-    private static Connection getNewConnection(String jdbcUrl) throws SQLException {
-        return dataSource(jdbcUrl).getConnection();
     }
 }

@@ -1,6 +1,5 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.CategoryEntity;
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class CategoryDaoJdbc implements CategoryDao {
-    private static Config CFG = Config.getInstance();
 
     private final Connection connection;
 
@@ -139,5 +137,24 @@ public class CategoryDaoJdbc implements CategoryDao {
         } catch (SQLException e) {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public List<CategoryEntity> findAll() {
+        List<CategoryEntity> category = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM category")) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CategoryEntity ce = new CategoryEntity();
+                    ce.setId(rs.getObject("id", UUID.class));
+                    ce.setName(rs.getString("name"));
+                    ce.setUsername(rs.getString("username"));
+                    ce.setArchived(rs.getBoolean("archived"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return category;
     }
 }
