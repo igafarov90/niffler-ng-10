@@ -81,7 +81,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     public void delete(CategoryEntity category) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         jdbcTemplate.update(
-                "DELETE FROM spend WHERE id = ?",
+                "DELETE FROM category WHERE id = ?",
                 category.getId()
         );
     }
@@ -90,7 +90,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     public List<CategoryEntity> findAllByUsername(String username) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         return jdbcTemplate.query(
-                "SELECT * FROM spend WHERE username = ?",
+                "SELECT * FROM category WHERE username = ?",
                 CategoryEntityRowMapper.instance,
                 username
         );
@@ -100,7 +100,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     public List<CategoryEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         return jdbcTemplate.query(
-                "SELECT * FROM spend",
+                "SELECT * FROM category",
                 CategoryEntityRowMapper.instance
         );
     }

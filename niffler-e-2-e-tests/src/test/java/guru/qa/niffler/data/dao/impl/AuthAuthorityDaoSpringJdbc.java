@@ -21,7 +21,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     public void create(AuthorityEntity... authority) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         jdbcTemplate.batchUpdate(
-                "INSERT INTO public.authority (user_id, authority) VALUES (?, ?)",
+                "INSERT INTO authority (user_id, authority) VALUES (?, ?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -41,7 +41,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     public List<AuthorityEntity> findByUserId(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         return jdbcTemplate.query(
-                "SELECT * FROM public.authority WHERE id = ?",
+                "SELECT * FROM authority WHERE id = ?",
                 AuthAuthorityEntityRowMapper.instance,
                 id
         );

@@ -25,7 +25,7 @@ public class UserDaoSpringJdbc implements UserDao {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO public.user(username, currency, firstname, surname, photo, photo_small, full_name)" +
+                    "INSERT INTO \"user\"(username, currency, firstname, surname, photo, photo_small, full_name)" +
                             "VALUES(?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS
             );
@@ -48,7 +48,7 @@ public class UserDaoSpringJdbc implements UserDao {
     public Optional<UserEntity> findByUsername(String username) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         return Optional.ofNullable(jdbcTemplate.queryForObject(
-                "SELECT * FROM public.users WHERE username = ?",
+                "SELECT * FROM \"user\" WHERE username = ?",
                 UdUserEntityRowMapper.instance,
                 username
         ));
@@ -59,7 +59,7 @@ public class UserDaoSpringJdbc implements UserDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
-                        "SELECT * FROM public.user WHERE id = ?",
+                        "SELECT * FROM \"user\" WHERE id = ?",
                         UdUserEntityRowMapper.instance,
                         id
                 )
@@ -70,7 +70,7 @@ public class UserDaoSpringJdbc implements UserDao {
     public void delete(UserEntity user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         jdbcTemplate.update(
-                "DELETE FROM public.user WHERE id = ?",
+                "DELETE FROM \"user\" WHERE id = ?",
                 user.getId()
         );
     }
@@ -84,7 +84,7 @@ public class UserDaoSpringJdbc implements UserDao {
     public List<UserEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         return jdbcTemplate.query(
-                "SELECT * FROM public.user",
+                "SELECT * FROM \"user\"",
                 UdUserEntityRowMapper.instance
         );
     }

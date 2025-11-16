@@ -24,7 +24,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO public.user (" +
+                    "INSERT INTO \"user\" (" +
                             "username, " +
                             "password, " +
                             "enabled, " +
@@ -52,7 +52,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
-                        "SELECT * FROM public.user WHERE id = ?",
+                        "SELECT * FROM \"user\" WHERE id = ?",
                         AuthUserEntityRowMapper.instance,
                         id
                 )
@@ -63,7 +63,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     public void delete(AuthUserEntity user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         jdbcTemplate.update(
-                "DELETE FROM public.user WHERE id = ?",
+                "DELETE FROM \"user\" WHERE id = ?",
                 user.getId()
         );
     }
@@ -72,7 +72,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     public AuthUserEntity update(AuthUserEntity user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         jdbcTemplate.update(
-                "UPDATE public.user SET username = ?, " +
+                "UPDATE \"user\" SET username = ?, " +
                         "account_non_expired = ?, " +
                         "account_non_locked = ?, " +
                         "credentials_non_expired = ?, " +
@@ -94,7 +94,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     public List<AuthUserEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         return jdbcTemplate.query(
-                "SELECT * FROM public.user",
+                "SELECT * FROM \"user\"",
                 AuthUserEntityRowMapper.instance
         );
     }

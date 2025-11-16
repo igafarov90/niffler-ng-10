@@ -24,7 +24,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     @Override
     public void create(AuthorityEntity... authority) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-                "INSERT INTO public.authority (user_id, authority) VALUES (?, ?)",
+                "INSERT INTO authority (user_id, authority) VALUES (?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )) {
             for (AuthorityEntity a : authority) {
@@ -43,7 +43,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     public List<AuthorityEntity> findByUserId(UUID id) {
         List<AuthorityEntity> authorities = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-                "SELECT * FROM public.authority WHERE user_id = ?"
+                "SELECT * FROM authority WHERE user_id = ?"
         )) {
             ps.setObject(1, id);
             ps.executeQuery();
@@ -78,7 +78,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     @Override
     public void deleteByUserId(AuthorityEntity authority) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-                "DELETE FROM public.authority WHERE user_id = ?"
+                "DELETE FROM authority WHERE user_id = ?"
         )) {
             ps.setObject(1, authority.getUser().getId());
             int rowsRemoved = ps.executeUpdate();
