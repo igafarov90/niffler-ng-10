@@ -9,11 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class SpendDaoJdbc implements SpendDao {
-    private static Config CFG = Config.getInstance();
 
     private final Connection connection;
 
@@ -94,5 +95,32 @@ public class SpendDaoJdbc implements SpendDao {
         } catch (SQLException e) {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public List<SpendEntity> findAll() {
+        List<SpendEntity> spends = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM spend")) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CategoryEntity ce = new CategoryEntity();
+                    ce.setId(rs.getObject("category_id", UUID.class));
+
+                    SpendEntity se = new SpendEntity();
+                    se.setId(rs.getObject("id", UUID.class));
+                    se.setUsername(rs.getString("username"));
+                    se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    se.setSpendDate(rs.getDate("spend_date"));
+                    se.setAmount(rs.getDouble("amount"));
+                    se.setDescription(rs.getString("description"));
+                    se.setCategory(ce);
+                    spends.add(se);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return spends;
     }
 }
