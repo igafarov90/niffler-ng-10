@@ -1,10 +1,13 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.CategoryDao;
+import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
 import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
+import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
@@ -14,11 +17,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.Databases.transaction;
-
 public class SpendDbClient implements SpendClient {
 
+    private final CategoryDao categoryDao = new CategoryDaoJdbc();
+    private final SpendDao spendDao = new SpendDaoJdbc();
     private static Config CFG = Config.getInstance();
+
+    private final JdbcTransactionTemplate jdbcTxTemplate = new JdbcTransactionTemplate(
+            CFG.spendJdbcUrl()
+    );
 
     @Override
     public SpendJson getSpend(String id) {
@@ -32,25 +39,26 @@ public class SpendDbClient implements SpendClient {
 
     @Override
     public SpendJson createSpend(SpendJson spend) {
-        return transaction(connection -> {
+        return jdbcTxTemplate.execute(() -> {
                     SpendEntity spendEntity = SpendEntity.fromJson(spend);
                     if (spendEntity.getCategory().getId() == null) {
-                        CategoryEntity categoryEntity = new CategoryDaoJdbc(connection)
-                                .create(spendEntity.getCategory());
+                        CategoryEntity categoryEntity = categoryDao.create(spendEntity.getCategory());
                         spendEntity.setCategory(categoryEntity);
                     }
-                    return SpendJson.fromEntity(
-                            new SpendDaoJdbc(connection).create(spendEntity)
+                    return SpendJson.fromEntity(spendDao.create(spendEntity)
                     );
-                },
-                CFG.spendJdbcUrl()
+                }
         );
     }
 
+    @Override
     public CategoryJson createCategory(CategoryJson category) {
-        return transaction(connection -> {
-            return CategoryJson.fromEntity(new CategoryDaoJdbc(connection).create(CategoryEntity.fromJson(category)));
-        }, CFG.spendJdbcUrl());
+        return jdbcTxTemplate.execute(() -> CategoryJson.fromEntity(
+                        categoryDao.create(
+                                CategoryEntity.fromJson(category)
+                        )
+                )
+        );
     }
 
     @Override
@@ -65,31 +73,35 @@ public class SpendDbClient implements SpendClient {
 
     @Override
     public Optional<CategoryJson> findCategoryByNameAndUsername(String username, String categoryName) {
-        return transaction(connection -> {
-            return new CategoryDaoJdbc(connection).findByUsernameAndCategoryName(username, categoryName)
-                    .map(CategoryJson::fromEntity);
-        }, CFG.spendJdbcUrl());
+        return jdbcTxTemplate.execute(() -> categoryDao
+                .findByUsernameAndCategoryName(username, categoryName)
+                .map(CategoryJson::fromEntity));
     }
 
 
     @Override
     public Optional<CategoryJson> findCategoryById(UUID id) {
-        return transaction(connection -> {
-            return new CategoryDaoJdbc(connection).findById(id)
-                    .map(CategoryJson::fromEntity);
-        }, CFG.spendJdbcUrl());
+        return jdbcTxTemplate.execute(() -> categoryDao
+                .findById(id)
+                .map(CategoryJson::fromEntity));
     }
 
     @Override
-    public CategoryJson updateCategory(CategoryJson updateJson) {
-        throw new UnsupportedOperationException("Not implemented :(");
+    public CategoryJson updateCategory(CategoryJson category) {
+        return jdbcTxTemplate.execute(() -> CategoryJson.fromEntity(
+                        categoryDao.create(
+                                CategoryEntity.fromJson(category))
+                )
+        );
     }
 
     @Override
     public void deleteCategory(CategoryJson category) {
-        transaction(connection -> {
-            new CategoryDaoJdbc(connection).delete(CategoryEntity.fromJson(category));
-            return null;
-        }, CFG.spendJdbcUrl());
+        jdbcTxTemplate.execute(() -> {
+                    categoryDao.delete(CategoryEntity.fromJson(category)
+                    );
+                    return null;
+                }
+        );
     }
 }
