@@ -2,10 +2,10 @@ package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.impl.*;
-import guru.qa.niffler.data.entity.AuthUserEntity;
-import guru.qa.niffler.data.entity.Authority;
-import guru.qa.niffler.data.entity.AuthorityEntity;
-import guru.qa.niffler.data.entity.UserEntity;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.entity.auth.Authority;
+import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.utils.RandomDataUtils;

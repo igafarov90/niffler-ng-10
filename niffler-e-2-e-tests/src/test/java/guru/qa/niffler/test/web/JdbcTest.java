@@ -1,12 +1,19 @@
 package guru.qa.niffler.test.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.FriendshipDao;
 import guru.qa.niffler.data.dao.impl.*;
-import guru.qa.niffler.data.entity.AuthUserEntity;
-import guru.qa.niffler.data.entity.Authority;
-import guru.qa.niffler.data.entity.AuthorityEntity;
-import guru.qa.niffler.data.entity.UserEntity;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.entity.auth.Authority;
+import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.repository.UserRepository;
+import guru.qa.niffler.data.repository.impl.AuthUserRepositorySpringJdbc;
+import guru.qa.niffler.data.repository.impl.UserRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
@@ -16,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -191,7 +199,7 @@ public class JdbcTest {
         UserJson user = usersDbClient.createUser(
                 new UserJson(
                         null,
-                        "valentin-9",
+                        "valentin-119",
                         null,
                         null,
                         null,
@@ -200,7 +208,6 @@ public class JdbcTest {
                         "null"
                 )
         );
-        System.out.println(user);
     }
 
     @Test
@@ -209,7 +216,7 @@ public class JdbcTest {
         UserJson user = usersDbClient.createUser(
                 new UserJson(
                         null,
-                        "valentin-5",
+                        "valentin-61",
                         null,
                         null,
                         null,
@@ -218,9 +225,88 @@ public class JdbcTest {
                         "null"
                 )
         );
-        System.out.println(user);
+    }
+
+    @Test
+    void createFriendshipJdbcRepositoryTest() {
+        UsersDbClient usersDbClient = new UsersDbClient();
+        UserJson user1 = usersDbClient.createUser(
+                new UserJson(
+                        null,
+                        RandomDataUtils.randomName(),
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        "null",
+                        "null"
+                )
+        );
+        UserJson user2 = usersDbClient.createUser(
+                new UserJson(
+                        null,
+                        RandomDataUtils.randomName(),
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        "null",
+                        "null"
+                )
+        );
+        ObjectMapper mapper = new ObjectMapper();
+        UserEntity u1 = mapper.convertValue(user1, UserEntity.class);
+        UserEntity u2 = mapper.convertValue(user2, UserEntity.class);
+
+        UserRepository ur = new UserRepositoryJdbc();
+        ur.addFriend(u1, u2);
+
+        FriendshipDao fr = new FriendshipDaoJdbc();
+        Optional<FriendshipEntity> friendship = fr.findById(user1.id(), user2.id());
+        assertTrue(friendship.isPresent());
+        assertEquals(friendship.get().getRequester(), u1);
+        assertEquals(friendship.get().getAddressee(), u2);
+    }
+
+    @Test
+    void testCreateUserRepositorySpringJdbcTest() {
+        JdbcTransactionTemplate txTemplate = new JdbcTransactionTemplate(CFG.userdataJdbcUrl());
+        AuthUserEntity user = txTemplate.execute(() -> {
+            AuthUserEntity authUser = new AuthUserEntity();
+            authUser.setUsername(RandomDataUtils.randomUsername());
+            authUser.setPassword("1234");
+            authUser.setEnabled(true);
+            authUser.setAccountNonExpired(true);
+            authUser.setAccountNonLocked(true);
+            authUser.setCredentialsNonExpired(true);
+            authUser.setAuthorities(
+                    Arrays.stream(Authority.values()).map(
+                            e -> {
+                                AuthorityEntity ae = new AuthorityEntity();
+                                ae.setUser(authUser);
+                                ae.setAuthority(e);
+                                return ae;
+                            }
+                    ).toList()
+            );
+            return new AuthUserRepositorySpringJdbc().create(authUser);
+        });
+
+        Optional<AuthUserEntity> foundUser = txTemplate.execute(() ->
+                new AuthUserRepositorySpringJdbc().findById(user.getId()));
+
+        assertTrue(foundUser.isPresent());
+        assertEquals(user.getUsername(), foundUser.get().getUsername());
+        assertEquals(2, foundUser.get().getAuthorities().size());
+        assertTrue(foundUser.get().getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority() == Authority.read));
+        assertTrue(foundUser.get().getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority() == Authority.write));
     }
 }
+
+
+
 
 
 

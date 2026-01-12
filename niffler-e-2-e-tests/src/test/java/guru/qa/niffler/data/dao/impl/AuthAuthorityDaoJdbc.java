@@ -2,13 +2,15 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
-import guru.qa.niffler.data.entity.AuthUserEntity;
-import guru.qa.niffler.data.entity.Authority;
-import guru.qa.niffler.data.entity.AuthorityEntity;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.entity.auth.Authority;
+import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,9 +26,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     @Override
     public void create(AuthorityEntity... authority) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-                "INSERT INTO authority (user_id, authority) VALUES (?, ?)",
-                Statement.RETURN_GENERATED_KEYS
-        )) {
+                "INSERT INTO authority (user_id, authority) VALUES (?, ?)")) {
             for (AuthorityEntity a : authority) {
                 ps.setObject(1, a.getUser().getId());
                 ps.setString(2, a.getAuthority().name());
