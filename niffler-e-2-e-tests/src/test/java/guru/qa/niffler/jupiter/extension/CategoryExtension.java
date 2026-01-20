@@ -58,6 +58,6 @@ public class CategoryExtension implements BeforeEachCallback,
         CategoryJson category = context.getStore(NAMESPACE)
                 .get(context.getUniqueId(), CategoryJson.class);
         if (category != null)
-            spendClient.deleteCategory(category);
+            spendClient.removeCategory(category);
     }
 }
