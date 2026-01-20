@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
-import guru.qa.niffler.data.entity.AuthUserEntity;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

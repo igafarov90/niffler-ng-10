@@ -2,8 +2,8 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.SpendDao;
-import guru.qa.niffler.data.entity.CategoryEntity;
-import guru.qa.niffler.data.entity.SpendEntity;
+import guru.qa.niffler.data.entity.spend.CategoryEntity;
+import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CurrencyValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class SpendDaoJdbc implements SpendDao {
         )) {
             ps.setString(1, spend.getUsername());
             ps.setString(2, spend.getCurrency().name());
-            ps.setDate(3, spend.getSpendDate());
+            ps.setDate(3, new java.sql.Date(spend.getSpendDate().getTime()));
             ps.setDouble(4, spend.getAmount());
             ps.setString(5, spend.getDescription());
             ps.setObject(6, spend.getCategory().getId());
