@@ -5,36 +5,42 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.jupiter.extension.TestMethodContextExtension;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(BrowserExtension.class)
+@ExtendWith(
+        {
+                TestMethodContextExtension.class,
+                BrowserExtension.class
+        }
+)
 public class SpendingTest {
 
     private static final Config CFG = Config.getInstance();
 
     @User(
-            username = "duck",
             spendings = @Spending(
                     category = "Учеба",
                     amount = 89900,
                     currency = CurrencyValues.RUB,
                     description = "Обучение Niffler 2.0 юбилейный поток!"
-                    )
+            )
     )
     @Test
-    void spendingDescriptionShouldBeEditedByTableAction(SpendJson spending) {
+    void spendingDescriptionShouldBeEditedByTableAction(UserJson user) {
+        final String spendDescription = user.testData().spendings().getFirst().description();
         final String newDescription = "Обучение Niffler Next Generation";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login("duck", "12345")
-                .editSpending(spending.description())
+                .login(user.username(), user.testData().password())
+                .editSpending(spendDescription)
                 .setNewSpendingDescription(newDescription)
                 .save()
+                .find(newDescription)
                 .checkThatTableContains(newDescription);
     }
 }

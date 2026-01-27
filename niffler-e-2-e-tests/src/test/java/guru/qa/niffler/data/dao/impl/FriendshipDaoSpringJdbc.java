@@ -66,7 +66,7 @@ public class FriendshipDaoSpringJdbc implements FriendshipDao {
     @Override
     public void delete(UUID requesterId, UUID addresseeId) {
         jdbcTemplate.update(
-                "DELETE FROM friendship WHERE requester_id = ? AND addressee_id = ?",
+                "DELETE FROM friendship WHERE requester_id = ? OR addressee_id = ?",
                 requesterId,
                 addresseeId
         );

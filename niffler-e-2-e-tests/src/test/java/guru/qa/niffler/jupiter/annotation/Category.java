@@ -14,4 +14,6 @@ import java.lang.annotation.Target;
 public @interface Category {
 
     boolean archived() default false;
+
+    String name() default "";
 }

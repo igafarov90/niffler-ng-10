@@ -1,55 +1,62 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.annotation.UserType;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
+import guru.qa.niffler.jupiter.extension.TestMethodContextExtension;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Selenide.open;
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
 
-@ExtendWith(BrowserExtension.class)
+@ExtendWith(
+        {
+                TestMethodContextExtension.class,
+                BrowserExtension.class
+        }
+)
 public class FriendsTest {
     private static final Config CFG = Config.getInstance();
 
+    @User(friends = 1)
     @Test
-    @ExtendWith(UsersQueueExtension.class)
-    void friendsShouldBePresentInFriendsTable(@UserType(UserType.Type.WITH_FRIEND) StaticUser user) {
+    void friendsShouldBePresentInFriendsTable(UserJson user) {
         open(CFG.frontUrl(), LoginPage.class)
-                .login(user.username(), user.password())
+                .login(user.username(), user.testData().password())
                 .openFriendsPage()
-                .checkThatFriendIsVisible(user.friend());
+                .checkThatFriendIsVisible(user.testData().friends().getFirst().username());
     }
 
+    @User
     @Test
-    @ExtendWith(UsersQueueExtension.class)
-    void friendsTableShouldBeEmptyForNewUser(@UserType(UserType.Type.EMPTY) StaticUser user) {
+    void friendsTableShouldBeEmptyForNewUser(UserJson user) {
         open(CFG.frontUrl(), LoginPage.class)
-                .login(user.username(), user.password())
+                .login(user.username(), user.testData().password())
                 .openFriendsPage()
                 .checkThatFriendTableIsEmpty()
                 .checkThatNoUsersMessageIsPresent();
     }
 
+    @User(incomeInvitations = 1)
     @Test
-    @ExtendWith(UsersQueueExtension.class)
-    void incomeInvitationBePresentInFriendsTable(@UserType(UserType.Type.WITH_INCOME_REQUEST) StaticUser user) {
+    void incomeInvitationBePresentInFriendsTable(UserJson user) {
         open(CFG.frontUrl(), LoginPage.class)
-                .login(user.username(), user.password())
+                .login(user.username(), user.testData().password())
                 .openFriendsPage()
-                .checkFriendsRequest(user.income());
+                .findUser(user.testData().incomeInvitations().getFirst().username())
+                .checkFriendsRequest(user.testData().incomeInvitations().getFirst().username());
     }
 
+    @User(outcomeInvitations = 1)
     @Test
-    @ExtendWith(UsersQueueExtension.class)
-    void outcomeInvitationBePresentInFriendsTable(@UserType(UserType.Type.WITH_OUTCOME_REQUEST) StaticUser user) {
+    void outcomeInvitationBePresentInFriendsTable(UserJson user) {
         open(CFG.frontUrl(), LoginPage.class)
-                .login(user.username(), user.password())
+                .login(user.username(), user.testData().password())
                 .openFriendsPage()
                 .clickAllPeopleTab()
-                .checkStatusWaiting(user.outcome());
+                .findUser(user.testData().outcomeInvitations().getFirst().username())
+                .checkStatusWaiting(user.testData().outcomeInvitations().getFirst().username());
     }
 }
