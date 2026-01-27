@@ -2,8 +2,8 @@ package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.data.dao.FriendshipDao;
 import guru.qa.niffler.data.dao.UserDao;
-import guru.qa.niffler.data.dao.impl.FriendshipDaoJdbc;
-import guru.qa.niffler.data.dao.impl.UserDaoJdbc;
+import guru.qa.niffler.data.dao.impl.FriendshipDaoSpringJdbc;
+import guru.qa.niffler.data.dao.impl.UserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
@@ -13,10 +13,10 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserRepositoryJdbc implements UserRepository {
+public class UserRepositorySpringJdbc implements UserRepository {
 
-    private static final UserDao userDao = new UserDaoJdbc();
-    private static final FriendshipDao friendshipDao = new FriendshipDaoJdbc();
+    private static final UserDao userDao = new UserDaoSpringJdbc();
+    private static final FriendshipDao friendshipDao = new FriendshipDaoSpringJdbc();
 
     @Override
     public UserEntity create(UserEntity user) {
@@ -51,12 +51,13 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public void addFriend(UserEntity requester, UserEntity addressee) {
-        FriendshipEntity friends = new FriendshipEntity();
-        friends.setRequester(requester);
-        friends.setAddressee(addressee);
-        friends.setStatus(FriendshipStatus.ACCEPTED);
-        friends.setCreatedDate(new Date());
-        friendshipDao.create(friends);
+        FriendshipEntity friendshipInvitation = new FriendshipEntity();
+        friendshipInvitation.setRequester(requester);
+        friendshipInvitation.setAddressee(addressee);
+        friendshipInvitation.setStatus(FriendshipStatus.ACCEPTED);
+        friendshipInvitation.setCreatedDate(new Date());
+
+        friendshipDao.create(friendshipInvitation);
     }
 
     @Override

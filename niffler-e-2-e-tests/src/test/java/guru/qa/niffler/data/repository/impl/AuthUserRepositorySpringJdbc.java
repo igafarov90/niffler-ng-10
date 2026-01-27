@@ -84,10 +84,60 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
                         "u.account_non_expired, " +
                         "u.account_non_locked, " +
                         "u.credentials_non_expired " +
-                        "FROM \"user\" u join authority a on u.id = a.user_id WHERE u.id = ?",
+                        "FROM \"user\" u " +
+                        "JOIN authority a on u.id = a.user_id WHERE u.id = ?",
                 AuthUserResultSetExtractor.instance,
                 userId);
 
         return Optional.ofNullable(userEntity);
+    }
+
+    @Override
+    public Optional<AuthUserEntity> findByUsername(String username) {
+        AuthUserEntity userEntity = jdbcTemplate.query(
+                "SELECT a.id as authority_id, " +
+                        "a.authority, " +
+                        "a.user_id as id, " +
+                        "u.username, " +
+                        "u.password, " +
+                        "u.enabled, " +
+                        "u.account_non_expired, " +
+                        "u.account_non_locked, " +
+                        "u.credentials_non_expired " +
+                        "FROM \"user\" u " +
+                        "JOIN authority a on u.id = a.user_id WHERE u.username = ?",
+                AuthUserResultSetExtractor.instance,
+                username);
+
+        return Optional.ofNullable(userEntity);
+    }
+
+    @Override
+    public void remove(AuthUserEntity user) {
+        jdbcTemplate.update("DELETE FROM authority WHERE user_id = ?", user.getId());
+        jdbcTemplate.update("DELETE FROM \"user\" WHERE id = ?", user.getId());
+    }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE \"user\" u   SET " +
+                            "username = ?, password = ?, enabled = ?, " +
+                            "account_non_expired = ?, account_non_locked = ?, " +
+                            "credentials_non_expired = ? " +
+                            "WHERE u.id = ?"
+            );
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getPassword());
+            statement.setBoolean(3, user.getEnabled());
+            statement.setBoolean(4, user.getAccountNonExpired());
+            statement.setBoolean(5, user.getAccountNonLocked());
+            statement.setBoolean(6, user.getCredentialsNonExpired());
+            statement.setObject(7, user.getId());
+            statement.execute();
+            return statement;
+        });
+        return user;
     }
 }

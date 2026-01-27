@@ -34,6 +34,6 @@ public interface SpendApi {
 
     @GET("internal/categories/all")
     Call<List<CategoryJson>> getAllCategoriesByUsername(@Query("username") String username,
-                                                    @Query("excludeArchived") boolean excludeArchived);
+                                                        @Query("excludeArchived") boolean excludeArchived);
 }
 

@@ -6,7 +6,10 @@ import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -151,5 +154,33 @@ public class AuthUserDaoJdbc implements AuthUserDao {
             throw new RuntimeException(e);
         }
         return users;
+    }
+
+    @Override
+    public Optional<AuthUserEntity> findByUsername(String username) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM \"user\" WHERE username = ?"
+        )) {
+            ps.setString(1, username);
+            ps.execute();
+            try (ResultSet resultSet = ps.getResultSet()) {
+                if (resultSet.next()) {
+                    AuthUserEntity ue = new AuthUserEntity();
+                    ue.setId(resultSet.getObject("id", UUID.class));
+                    ue.setUsername(resultSet.getString("username"));
+                    ue.setPassword(resultSet.getString("password"));
+                    ue.setEnabled(resultSet.getBoolean("enabled"));
+                    ue.setAccountNonExpired(resultSet.getBoolean("account_non_expired"));
+                    ue.setAccountNonLocked(resultSet.getBoolean("account_non_locked"));
+                    ue.setCredentialsNonExpired(resultSet.getBoolean("credentials_non_expired"));
+                    logger.info("Пользователь найден: id={}, username={}", ue.getId(), ue.getUsername());
+                    return Optional.of(ue);
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

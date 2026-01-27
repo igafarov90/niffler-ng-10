@@ -1,7 +1,6 @@
 package guru.qa.niffler.data.dao;
 
 
-
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 
 import java.util.List;
@@ -18,4 +17,6 @@ public interface AuthUserDao {
     AuthUserEntity update(AuthUserEntity user);
 
     List<AuthUserEntity> findAll();
+
+    Optional<AuthUserEntity> findByUsername(String username);
 }

@@ -30,7 +30,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                     if (spendings.length > 0) {
                         Spending spendingAnnotation = spendings[0];
 
-                        final SpendJson created = spendClient.createSpend(
+                        final SpendJson created = spendClient.create(
                                 new SpendJson(
                                         null,
                                         new Date(),

@@ -1,5 +1,7 @@
 package guru.qa.niffler.service;
 
+import guru.qa.niffler.data.entity.spend.CategoryEntity;
+import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
@@ -10,23 +12,23 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SpendClient {
-    SpendJson getSpend(String id);
+    SpendJson create(SpendJson spend);
 
-    SpendJson getAllSpends(CurrencyValues filterCurrency, DataFilterValues dataFilterValues);
+    SpendJson update(SpendJson spend);
 
-    SpendJson createSpend(SpendJson spend);
-
-    SpendJson editSpend(SpendJson spend);
-
-    void deleteSpend(List<String> ids);
+    CategoryJson updateCategory(CategoryJson category);
 
     CategoryJson createCategory(CategoryJson category);
 
-    Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username);
-
     Optional<CategoryJson> findCategoryById(UUID id);
 
-    CategoryJson updateCategory(CategoryJson updateJson);
+    Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String username, String name);
 
-    void deleteCategory(CategoryJson json);
+    Optional<SpendJson> findById(UUID id);
+
+    Optional<SpendJson> findByUsernameAndSpendDescription(String username, String description);
+
+    void remove(SpendJson spend);
+
+    void removeCategory(CategoryJson category);
 }

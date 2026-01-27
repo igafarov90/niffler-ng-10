@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -18,10 +19,10 @@ import java.util.UUID;
 public class SpendDaoSpringJdbc implements SpendDao {
 
     private static final Config CFG = Config.getInstance();
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
 
     @Override
     public SpendEntity create(SpendEntity spend) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -44,7 +45,6 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
     @Override
     public Optional<SpendEntity> findById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM spend WHERE id = ?",
@@ -56,7 +56,6 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
     @Override
     public void delete(SpendEntity spend) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         jdbcTemplate.update(
                 "DELETE FROM spend WHERE id = ?",
                 spend.getId()
@@ -65,10 +64,39 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
     @Override
     public List<SpendEntity> findAll() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         return jdbcTemplate.query(
                 "SELECT * FROM spend",
                 SpendEntityRowMapper.instance
+        );
+    }
+
+    @Override
+    public SpendEntity update(SpendEntity spend) {
+        jdbcTemplate.update(
+                "UPDATE spend SET " +
+                        "username = ?, spend_date = ?, " +
+                        "currency = ?, amount = ?, " +
+                        "description = ?, category_id = ?" +
+                        " WHERE id = ?",
+                spend.getUsername(),
+                new Date(spend.getSpendDate().getTime()),
+                spend.getCurrency().name(),
+                spend.getAmount(),
+                spend.getDescription(),
+                spend.getCategory().getId(),
+                spend.getId());
+        return spend;
+    }
+
+    @Override
+    public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM spend WHERE username = ? and description = ?",
+                        SpendEntityRowMapper.instance,
+                        username,
+                        description
+                )
         );
     }
 }

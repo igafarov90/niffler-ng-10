@@ -1,7 +1,6 @@
 package guru.qa.niffler.data.dao.impl;
 
 
-
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -98,6 +97,18 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         return jdbcTemplate.query(
                 "SELECT * FROM \"user\"",
                 AuthUserEntityRowMapper.instance
+        );
+    }
+
+    @Override
+    public Optional<AuthUserEntity> findByUsername(String username) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM \"user\" WHERE username = ?",
+                        AuthUserEntityRowMapper.instance,
+                        username
+                )
         );
     }
 }

@@ -2,21 +2,22 @@ package guru.qa.niffler.test.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.FriendshipDao;
 import guru.qa.niffler.data.dao.impl.*;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
+import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.repository.UserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositorySpringJdbc;
-import guru.qa.niffler.data.repository.impl.UserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.*;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.SpendClient;
+import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,9 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -194,81 +197,6 @@ public class JdbcTest {
     }
 
     @Test
-    void createUserSpringJdbcTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
-        UserJson user = usersDbClient.createUser(
-                new UserJson(
-                        null,
-                        "valentin-119",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        "null",
-                        "null"
-                )
-        );
-    }
-
-    @Test
-    void createUserJdbcTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
-        UserJson user = usersDbClient.createUser(
-                new UserJson(
-                        null,
-                        "valentin-61",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        "null",
-                        "null"
-                )
-        );
-    }
-
-    @Test
-    void createFriendshipJdbcRepositoryTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
-        UserJson user1 = usersDbClient.createUser(
-                new UserJson(
-                        null,
-                        RandomDataUtils.randomName(),
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        "null",
-                        "null"
-                )
-        );
-        UserJson user2 = usersDbClient.createUser(
-                new UserJson(
-                        null,
-                        RandomDataUtils.randomName(),
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        "null",
-                        "null"
-                )
-        );
-        ObjectMapper mapper = new ObjectMapper();
-        UserEntity u1 = mapper.convertValue(user1, UserEntity.class);
-        UserEntity u2 = mapper.convertValue(user2, UserEntity.class);
-
-        UserRepository ur = new UserRepositoryJdbc();
-        ur.addFriend(u1, u2);
-
-        FriendshipDao fr = new FriendshipDaoJdbc();
-        Optional<FriendshipEntity> friendship = fr.findById(user1.id(), user2.id());
-        assertTrue(friendship.isPresent());
-        assertEquals(friendship.get().getRequester(), u1);
-        assertEquals(friendship.get().getAddressee(), u2);
-    }
-
-    @Test
     void testCreateUserRepositorySpringJdbcTest() {
         JdbcTransactionTemplate txTemplate = new JdbcTransactionTemplate(CFG.userdataJdbcUrl());
         AuthUserEntity user = txTemplate.execute(() -> {
@@ -302,6 +230,212 @@ public class JdbcTest {
                 .anyMatch(a -> a.getAuthority() == Authority.read));
         assertTrue(foundUser.get().getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority() == Authority.write));
+    }
+
+    @Test
+    void createUserHibernateTest() {
+        UsersDbClient usersDbClient = new UsersDbClient();
+        UserJson user = usersDbClient.createUser(
+                "RND9", "12345");
+        usersDbClient.createOutcomeInvitations(user, 1);
+        usersDbClient.createIncomeInvitations(user, 1);
+        usersDbClient.createFriends(user, 1);
+
+        ObjectMapper mapper = new ObjectMapper();
+        UserEntity u1 = mapper.convertValue(user, UserEntity.class);
+
+        JdbcTransactionTemplate txTemplate = new JdbcTransactionTemplate(CFG.userdataJdbcUrl());
+        txTemplate.execute(() -> {
+            new UserRepositoryJdbc().remove(u1);
+            return null;
+        });
+    }
+
+    @Test
+    void updateSpendJdbcTest() {
+        XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
+                CFG.spendJdbcUrl()
+        );
+        xaTransactionTemplate.execute(() -> {
+            Optional<SpendEntity> spend = new SpendDaoJdbc().findById(UUID.fromString("1ee2ac3b-41bb-40d1-ab4f-2931b7b11973"));
+            Optional<SpendEntity> spend2 = new SpendDaoJdbc().findByUsernameAndSpendDescription("cat", "test");
+            SpendEntity sp = spend2.get();
+            System.out.println(sp.getId());
+            sp.setDescription("descr");
+            SpendEntity spend4 = new SpendDaoJdbc().update(sp);
+            return null;
+        });
+    }
+
+    @Test
+    void updateSpendSpringJdbcTest() {
+        XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
+                CFG.spendJdbcUrl()
+        );
+        xaTransactionTemplate.execute(() -> {
+            Optional<SpendEntity> spend = new SpendDaoSpringJdbc().findById(UUID.fromString("1ee2ac3b-41bb-40d1-ab4f-2931b7b11973"));
+            Optional<SpendEntity> spend2 = new SpendDaoSpringJdbc().findByUsernameAndSpendDescription("cat", "descr");
+            SpendEntity sp = spend2.get();
+            sp.setDescription("descr2");
+            new SpendDaoSpringJdbc().update(sp);
+            return null;
+        });
+    }
+
+    @Test
+    void updateSpendRepositoryJdbcTest() {
+        XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
+                CFG.spendJdbcUrl()
+        );
+        xaTransactionTemplate.execute(() -> {
+            new SpendRepositoryJdbc().findById(UUID.fromString("1ee2ac3b-41bb-40d1-ab4f-2931b7b11973"));
+            Optional<SpendEntity> spend2 = new SpendRepositoryJdbc().findByUsernameAndSpendDescription("cat", "descr2");
+            SpendEntity sp = spend2.get();
+            sp.setDescription("descr3");
+            new SpendRepositoryJdbc().update(sp);
+            return null;
+        });
+    }
+
+    @Test
+    void updateSpendRepositorySpringJdbcTest() {
+        XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
+                CFG.spendJdbcUrl()
+        );
+        xaTransactionTemplate.execute(() -> {
+            new SpendRepositorySpringJdbc().findById(UUID.fromString("1ee2ac3b-41bb-40d1-ab4f-2931b7b11973"));
+            Optional<SpendEntity> spend2 = new SpendRepositorySpringJdbc().findByUsernameAndSpendDescription("cat", "descr3");
+            SpendEntity sp = spend2.get();
+            sp.setDescription("descr4");
+            new SpendRepositorySpringJdbc().update(sp);
+            return null;
+        });
+    }
+
+    @Test
+    void updateSpendRepositoryHibernateTest() {
+        XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
+                CFG.spendJdbcUrl()
+        );
+        xaTransactionTemplate.execute(() -> {
+            new SpendRepositoryHibernate().findById(UUID.fromString("1ee2ac3b-41bb-40d1-ab4f-2931b7b11973"));
+            Optional<SpendEntity> spend2 = new SpendRepositoryHibernate().findByUsernameAndSpendDescription("cat", "descr4");
+            SpendEntity sp = spend2.get();
+            sp.setDescription("descr5");
+            new SpendRepositoryHibernate().update(sp);
+            return null;
+        });
+    }
+
+    @Test
+    void createSpendBySpendClientTest() {
+        SpendClient spendClient = new SpendDbClient();
+        SpendJson spendJson = spendClient.create(
+                new SpendJson(
+                        null,
+                        new Date(),
+                        new CategoryJson(
+                                null,
+                                RandomDataUtils.randomCategoryName(),
+                                "duck",
+                                false
+                        ),
+                        CurrencyValues.RUB,
+                        1000.0,
+                        "cat-name-tx",
+                        "duck"
+                )
+        );
+        System.out.println(spendJson);
+    }
+
+    @Test
+    void updateSpendBySpendClientTest() {
+        SpendClient spendClient = new SpendDbClient();
+        SpendJson spendJson = spendClient.update(
+                new SpendJson(
+                        UUID.fromString("1ee2ac3b-41bb-40d1-ab4f-2931b7b11973"),
+                        new Date(),
+                        new CategoryJson(
+                                UUID.fromString("83a7ad98-0af9-4e13-9849-5cecd399db0a"),
+                                RandomDataUtils.randomCategoryName(),
+                                "duck",
+                                false
+                        ),
+                        CurrencyValues.RUB,
+                        1000.0,
+                        "cat-name-tx",
+                        "duck"
+                )
+        );
+        System.out.println(spendJson);
+    }
+
+    @Test
+    void removeCategoryTest() {
+        SpendClient spendClient = new SpendDbClient();
+        CategoryJson toCreate = new CategoryJson(
+                null,
+                "Direct Test18",
+                "duck",
+                false
+        );
+        CategoryJson createdJson = spendClient.createCategory(toCreate);
+        spendClient.removeCategory(createdJson);
+    }
+
+    @Test
+    void removeSpendTest() {
+        SpendClient spendClient = new SpendDbClient();
+        SpendJson toCreate = new SpendJson(
+                null,
+                new Date(),
+                new CategoryJson(
+                        null,
+                        RandomDataUtils.randomCategoryName(),
+                        "duck",
+                        false
+                ),
+                CurrencyValues.RUB,
+                1000.0,
+                RandomDataUtils.randomSentence(3),
+                "duck"
+        );
+        SpendJson createdSpend = spendClient.create(toCreate);
+
+        SpendJson toUpdate = new SpendJson(
+                createdSpend.id(),
+                createdSpend.spendDate(),
+                createdSpend.category(),
+                createdSpend.currency(),
+                2000.0,
+                RandomDataUtils.randomSentence(1),
+                createdSpend.username()
+        );
+        spendClient.update(toUpdate);
+    }
+
+    @Test
+    void updateSpendToArchiveTest() {
+        SpendClient spendClient = new SpendDbClient();
+        SpendJson toCreate = new SpendJson(
+                null,
+                new Date(),
+                new CategoryJson(
+                        null,
+                        RandomDataUtils.randomCategoryName(),
+                        "duck",
+                        false
+                ),
+                CurrencyValues.RUB,
+                1000.0,
+                RandomDataUtils.randomSentence(3),
+                "duck"
+        );
+        SpendJson createdSpend = spendClient.create(toCreate);
+        CategoryJson createdCategory = createdSpend.category();
+        spendClient.remove(createdSpend);
+        spendClient.removeCategory(createdCategory);
     }
 }
 

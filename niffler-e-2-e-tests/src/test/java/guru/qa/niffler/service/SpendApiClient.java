@@ -29,7 +29,7 @@ public class SpendApiClient implements SpendClient {
 
     private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
-    @Override
+
     public SpendJson getSpend(String id) {
         final Response<SpendJson> response;
         try {
@@ -42,7 +42,7 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    @Override
+
     public SpendJson getAllSpends(CurrencyValues filterCurrency, DataFilterValues dataFilterValues) {
         final Response<SpendJson> response;
         try {
@@ -55,7 +55,7 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    @Override
+
     public SpendJson createSpend(SpendJson spend) {
         final Response<SpendJson> response;
         try {
@@ -68,7 +68,7 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    @Override
+
     public SpendJson editSpend(SpendJson spend) {
         final Response<SpendJson> response;
         try {
@@ -81,7 +81,7 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    @Override
+
     public void deleteSpend(List<String> ids) {
         final Response<Void> response;
         try {
@@ -105,6 +105,16 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
+    @Override
+    public SpendJson create(SpendJson spend) {
+        throw new UnsupportedOperationException("Not implemented :(");
+    }
+
+    @Override
+    public SpendJson update(SpendJson spend) {
+        throw new UnsupportedOperationException("Not implemented :(");
+    }
+
     public CategoryJson updateCategory(CategoryJson category) {
         final Response<CategoryJson> response;
         try {
@@ -117,7 +127,7 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    @Override
+
     public void deleteCategory(CategoryJson json) {
         throw new UnsupportedOperationException("Not implemented :(");
     }
@@ -138,8 +148,33 @@ public class SpendApiClient implements SpendClient {
         throw new UnsupportedOperationException("Not implemented :(");
     }
 
-    @Override
+
     public Optional<CategoryJson> findCategoryById(UUID id) {
+        throw new UnsupportedOperationException("Not implemented :(");
+    }
+
+    @Override
+    public Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String username, String name) {
+        throw new UnsupportedOperationException("Not implemented :(");
+    }
+
+    @Override
+    public Optional<SpendJson> findById(UUID id) {
+        throw new UnsupportedOperationException("Not implemented :(");
+    }
+
+    @Override
+    public Optional<SpendJson> findByUsernameAndSpendDescription(String username, String description) {
+        throw new UnsupportedOperationException("Not implemented :(");
+    }
+
+    @Override
+    public void remove(SpendJson spend) {
+        throw new UnsupportedOperationException("Not implemented :(");
+    }
+
+    @Override
+    public void removeCategory(CategoryJson category) {
         throw new UnsupportedOperationException("Not implemented :(");
     }
 }
