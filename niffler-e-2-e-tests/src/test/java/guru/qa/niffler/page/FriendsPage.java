@@ -4,8 +4,8 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.By;
 
+import static com.codeborne.selenide.Selectors.by;
 import static com.codeborne.selenide.Selectors.byTagAndText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -19,7 +19,7 @@ public class FriendsPage {
     private final SelenideElement allPeopleTab = $("a[href='/people/all']");
     private final ElementsCollection peopleRows = $$("#all tr");
     private final SelenideElement chipWaiting = $(byTagAndText("span", "Waiting..."));
-
+    private final SelenideElement searchInput = $(by("aria-label", "search"));
 
 
     public FriendsPage checkThatFriendIsVisible(String expectedFriendName) {
@@ -39,7 +39,6 @@ public class FriendsPage {
         peopleRows.findBy(Condition.text(user))
                 .shouldHave(Condition.visible)
                 .shouldHave(Condition.text(text));
-
         return this;
     }
 
@@ -52,8 +51,14 @@ public class FriendsPage {
         noUsersMessage.isEnabled();
         return this;
     }
+
     public FriendsPage clickAllPeopleTab() {
         allPeopleTab.click();
+        return this;
+    }
+
+    public FriendsPage findUser(String user) {
+        searchInput.setValue(user).pressEnter();
         return this;
     }
 }

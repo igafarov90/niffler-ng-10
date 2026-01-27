@@ -29,7 +29,6 @@ public class SpendApiClient implements SpendClient {
 
     private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
-
     public SpendJson getSpend(String id) {
         final Response<SpendJson> response;
         try {
@@ -41,7 +40,6 @@ public class SpendApiClient implements SpendClient {
         assertEquals(SC_OK, response.code());
         return response.body();
     }
-
 
     public SpendJson getAllSpends(CurrencyValues filterCurrency, DataFilterValues dataFilterValues) {
         final Response<SpendJson> response;
@@ -55,7 +53,6 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-
     public SpendJson createSpend(SpendJson spend) {
         final Response<SpendJson> response;
         try {
@@ -68,7 +65,6 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-
     public SpendJson editSpend(SpendJson spend) {
         final Response<SpendJson> response;
         try {
@@ -80,7 +76,6 @@ public class SpendApiClient implements SpendClient {
         assertEquals(SC_OK, response.code());
         return response.body();
     }
-
 
     public void deleteSpend(List<String> ids) {
         final Response<Void> response;
@@ -127,7 +122,6 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-
     public void deleteCategory(CategoryJson json) {
         throw new UnsupportedOperationException("Not implemented :(");
     }
@@ -147,7 +141,6 @@ public class SpendApiClient implements SpendClient {
     public Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username) {
         throw new UnsupportedOperationException("Not implemented :(");
     }
-
 
     public Optional<CategoryJson> findCategoryById(UUID id) {
         throw new UnsupportedOperationException("Not implemented :(");

@@ -3,11 +3,18 @@ package guru.qa.niffler.jupiter.extension;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.SpendDbClient;
-import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
+import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
 
 public class CategoryExtension implements BeforeEachCallback,
         AfterTestExecutionCallback,
@@ -25,16 +32,44 @@ public class CategoryExtension implements BeforeEachCallback,
             Category[] categories = userAnnotation.categories();
             if (categories.length > 0) {
 
-                Category categoryAnnotation = categories[0];
-                CategoryJson created = spendClient.createCategory(
-                        new CategoryJson(
-                                null,
-                                RandomDataUtils.randomCategoryName(),
-                                userAnnotation.username(),
-                                categoryAnnotation.archived())
-                );
-                context.getStore(NAMESPACE)
-                        .put(context.getUniqueId(), created);
+                Optional<UserJson> testUser = UserExtension.createdUser();
+                final String username = testUser.isPresent()
+                        ? testUser.get().username()
+                        : userAnnotation.username();
+
+                List<CategoryJson> result = new ArrayList<>();
+
+                for (Category categoryAnnotation : userAnnotation.categories()) {
+                    CategoryJson category =
+                            new CategoryJson(
+                                    null,
+                                    "".equals(categoryAnnotation.name()) ? randomCategoryName() : categoryAnnotation.name(),
+                                    username,
+                                    categoryAnnotation.archived()
+                            );
+                    CategoryJson created = spendClient.createCategory(category);
+                    if (categoryAnnotation.archived()) {
+                        CategoryJson archivedCategory = new CategoryJson(
+                                created.id(),
+                                created.name(),
+                                created.username(),
+                                true
+                        );
+                        created = spendClient.updateCategory(archivedCategory);
+                    }
+                    result.add(created);
+                }
+                if (testUser.isPresent()) {
+                    testUser.get().testData().categories().addAll(
+                            result
+                    );
+
+                } else {
+                    context.getStore(NAMESPACE).put(
+                            context.getUniqueId(),
+                            result.stream().toArray(CategoryJson[]::new)
+                    );
+                }
             }
         });
     }
@@ -44,20 +79,36 @@ public class CategoryExtension implements BeforeEachCallback,
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
         return parameterContext.getParameter()
                 .getType()
-                .isAssignableFrom(CategoryJson.class);
+                .isAssignableFrom(CategoryJson[].class);
     }
 
     @Override
-    public CategoryJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-        return extensionContext.getStore(NAMESPACE)
-                .get(extensionContext.getUniqueId(), CategoryJson.class);
+    public CategoryJson[] resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws
+            ParameterResolutionException {
+        return createdCategory();
     }
 
     @Override
     public void afterTestExecution(ExtensionContext context) {
-        CategoryJson category = context.getStore(NAMESPACE)
-                .get(context.getUniqueId(), CategoryJson.class);
-        if (category != null)
-            spendClient.removeCategory(category);
+        CategoryJson[] categories = createdCategory();
+        if (categories != null) {
+            for (CategoryJson category : categories) {
+                if (!category.archived()) {
+                    CategoryJson archivedCategory = new CategoryJson(
+                            category.id(),
+                            category.name(),
+                            category.username(),
+                            true
+                    );
+                    spendClient.updateCategory(archivedCategory);
+                }
+            }
+        }
+    }
+
+    public static CategoryJson[] createdCategory() {
+        final ExtensionContext methodContext = context();
+        return methodContext.getStore(NAMESPACE)
+                .get(methodContext.getUniqueId(), CategoryJson[].class);
     }
 }

@@ -43,7 +43,8 @@ public class UserRepositoryHibernate implements UserRepository {
 
     @Override
     public UserEntity update(UserEntity user) {
-        throw new UnsupportedOperationException("Not implemented(");
+        entityManager.joinTransaction();
+        return entityManager.merge(user);
     }
 
     @Override
