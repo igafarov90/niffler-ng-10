@@ -6,7 +6,9 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,6 +21,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
 
     private final EntityManager entityManager = em(CFG.spendJdbcUrl());
 
+    @Nonnull
     @Override
     public SpendEntity create(SpendEntity spend) {
         entityManager.joinTransaction();
@@ -26,6 +29,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return spend;
     }
 
+    @Nonnull
     @Override
     public SpendEntity update(SpendEntity spend) {
         entityManager.joinTransaction();
@@ -33,6 +37,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return spend;
     }
 
+    @Nonnull
     @Override
     public CategoryEntity updateCategory(CategoryEntity category) {
         entityManager.joinTransaction();
@@ -40,6 +45,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return category;
     }
 
+    @Nonnull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         entityManager.joinTransaction();

@@ -1,23 +1,25 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.data.entity.spend.CategoryEntity;
-import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
 
-import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public interface SpendClient {
+    @Nonnull
     SpendJson create(SpendJson spend);
 
+    @Nonnull
     SpendJson update(SpendJson spend);
 
+    @Nonnull
     CategoryJson updateCategory(CategoryJson category);
 
+    @Nonnull
     CategoryJson createCategory(CategoryJson category);
 
     Optional<CategoryJson> findCategoryById(UUID id);

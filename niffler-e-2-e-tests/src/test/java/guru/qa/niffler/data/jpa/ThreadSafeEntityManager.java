@@ -1,38 +1,22 @@
 package guru.qa.niffler.data.jpa;
 
-import jakarta.persistence.CacheRetrieveMode;
-import jakarta.persistence.CacheStoreMode;
-import jakarta.persistence.ConnectionConsumer;
-import jakarta.persistence.ConnectionFunction;
-import jakarta.persistence.EntityGraph;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.FindOption;
-import jakarta.persistence.FlushModeType;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.LockOption;
-import jakarta.persistence.Query;
-import jakarta.persistence.RefreshOption;
-import jakarta.persistence.StoredProcedureQuery;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.TypedQueryReference;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaDelete;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.CriteriaSelect;
-import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.Metamodel;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 
+@ParametersAreNonnullByDefault
 public class ThreadSafeEntityManager implements EntityManager {
 
     private final ThreadLocal<EntityManager> threadEm = new ThreadLocal<>();
     private final EntityManagerFactory emf;
 
 
-    public ThreadSafeEntityManager(EntityManager delegate) {
+    public ThreadSafeEntityManager(@Nonnull EntityManager delegate) {
         threadEm.set(delegate);
         emf = delegate.getEntityManagerFactory();
     }

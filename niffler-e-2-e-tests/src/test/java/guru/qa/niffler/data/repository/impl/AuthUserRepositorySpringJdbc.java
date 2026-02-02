@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,6 +25,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     private static final Config CFG = Config.getInstance();
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
 
+    @Nonnull
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
 
@@ -118,6 +120,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         jdbcTemplate.update("DELETE FROM \"user\" WHERE id = ?", user.getId());
     }
 
+    @Nonnull
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
         jdbcTemplate.update(connection -> {

@@ -5,6 +5,7 @@ import guru.qa.niffler.data.dao.FriendshipDao;
 import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.mapper.FriendshipEntityRowMapper;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,6 +53,7 @@ public class FriendshipDaoJdbc implements FriendshipDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<FriendshipEntity> findByRequester(UUID requesterId) {
         List<FriendshipEntity> friendships = new ArrayList<>();
@@ -70,6 +72,7 @@ public class FriendshipDaoJdbc implements FriendshipDao {
         return friendships;
     }
 
+    @Nonnull
     @Override
     public List<FriendshipEntity> findByAddressee(UUID addresseeId) {
         List<FriendshipEntity> friendships = new ArrayList<>();

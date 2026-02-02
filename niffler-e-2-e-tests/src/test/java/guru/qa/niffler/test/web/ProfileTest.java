@@ -1,15 +1,15 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.helpers.ToastMessages;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
-import guru.qa.niffler.jupiter.extension.CategoryExtension;
 import guru.qa.niffler.jupiter.extension.TestMethodContextExtension;
-import guru.qa.niffler.jupiter.extension.UserExtension;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.ProfilePage;
+import guru.qa.niffler.utils.RandomDataUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -19,40 +19,57 @@ import static com.codeborne.selenide.Selenide.open;
 @ExtendWith(
         {
                 TestMethodContextExtension.class,
-          //      UserExtension.class,
-            //    CategoryExtension.class,
                 BrowserExtension.class
         }
 )
 public class ProfileTest {
-    private final static String HEADER = "Profile";
-    private final static Config CFG = Config.getInstance();
-    ProfilePage profilePage;
 
+    private final static Config CFG = Config.getInstance();
+
+    @DisplayName("Архивная категория должна отображаться в списке категорий")
     @Test
     @User(
             categories = @Category(archived = true)
     )
     void archivedCategoryShouldPresentInCategoriesList(UserJson user) {
-        profilePage = open(CFG.frontUrl(), LoginPage.class)
+        open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password())
                 .checkThatPageLoaded()
-                .openProfilePage()
-                .checkPageHeader(HEADER);
-        profilePage.switchToggle();
-        profilePage.checkCategoryExists(user.testData().categories().getFirst().name());
+                .getHeader()
+                .toProfilePage()
+                .switchToggle()
+                .checkCategoryExists(user.testData().categories().getFirst().name());
     }
 
+    @DisplayName("Активная категория отображена в списке категорий")
     @User(
             categories = @Category()
     )
     @Test
     void activeCategoryShouldPresentInCategoriesList(UserJson user) {
-        profilePage = open(CFG.frontUrl(), LoginPage.class)
+        open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password())
                 .checkThatPageLoaded()
-                .openProfilePage()
-                .checkPageHeader(HEADER)
+                .getHeader()
+                .toProfilePage()
                 .checkCategoryExists(user.testData().categories().getFirst().name());
+    }
+
+    @DisplayName("Редактирование профиля пользователя")
+    @User
+    @Test
+    void shouldEditUserProfile(UserJson user) {
+        String category = RandomDataUtils.randomCategoryName();
+        open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .checkThatPageLoaded()
+                .getHeader()
+                .toProfilePage()
+                .setNewName(RandomDataUtils.randomName())
+                .addCategory(category)
+                .saveChanges()
+                .checkCategoryExists(category)
+                .getToast()
+                .shouldHaveText(ToastMessages.PROFILE_UPDATED);
     }
 }

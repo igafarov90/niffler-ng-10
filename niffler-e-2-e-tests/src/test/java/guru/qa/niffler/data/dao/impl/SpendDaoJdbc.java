@@ -9,6 +9,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class SpendDaoJdbc implements SpendDao {
 
     private static final Logger logger = LoggerFactory.getLogger(SpendDaoJdbc.class);
 
+    @Nonnull
     @Override
     public SpendEntity create(SpendEntity spend) {
         try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -96,6 +98,7 @@ public class SpendDaoJdbc implements SpendDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<SpendEntity> findAll() {
         List<SpendEntity> spends = new ArrayList<>();
@@ -122,6 +125,7 @@ public class SpendDaoJdbc implements SpendDao {
         return spends;
     }
 
+    @Nonnull
     @Override
     public SpendEntity update(SpendEntity spend) {
         try (PreparedStatement spendPs = holder(CFG.spendJdbcUrl()).connection().prepareStatement(

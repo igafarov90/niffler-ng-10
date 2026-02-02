@@ -8,6 +8,7 @@ import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +46,7 @@ public class FriendshipDaoSpringJdbc implements FriendshipDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<FriendshipEntity> findByRequester(UUID requesterId) {
         return jdbcTemplate.query(
@@ -54,6 +56,7 @@ public class FriendshipDaoSpringJdbc implements FriendshipDao {
         );
     }
 
+    @Nonnull
     @Override
     public List<FriendshipEntity> findByAddressee(UUID addresseeId) {
         return jdbcTemplate.query(

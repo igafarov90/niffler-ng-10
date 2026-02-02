@@ -9,6 +9,7 @@ import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
 
+import javax.annotation.Nonnull;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class UserRepositoryJdbc implements UserRepository {
     private static final UserDao userDao = new UserDaoJdbc();
     private static final FriendshipDao friendshipDao = new FriendshipDaoJdbc();
 
+    @Nonnull
     @Override
     public UserEntity create(UserEntity user) {
         return userDao.create(user);
@@ -33,6 +35,7 @@ public class UserRepositoryJdbc implements UserRepository {
         return userDao.findByUsername(username);
     }
 
+    @Nonnull
     @Override
     public UserEntity update(UserEntity user) {
         return userDao.update(user);

@@ -7,7 +7,9 @@ import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +18,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
     private static final SpendDao spendDao = new SpendDaoJdbc();
     private static final CategoryDao categoryDao = new CategoryDaoJdbc();
 
+    @Nonnull
     @Override
 
     public SpendEntity create(SpendEntity spend) {
@@ -27,16 +30,19 @@ public class SpendRepositoryJdbc implements SpendRepository {
         return spendDao.create(spend);
     }
 
+    @Nonnull
     @Override
     public SpendEntity update(SpendEntity spend) {
         return spendDao.update(spend);
     }
 
+    @Nonnull
     @Override
     public CategoryEntity updateCategory(CategoryEntity category) {
         return categoryDao.update(category);
     }
 
+    @Nonnull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         return categoryDao.create(category);

@@ -1,55 +1,55 @@
 package guru.qa.niffler.config;
 
-enum LocalConfig implements Config {
+enum DockerConfig implements Config {
     INSTANCE;
 
     @Override
     public String frontUrl() {
-        return "http://localhost:3000/";
+        return "";
     }
 
     @Override
     public String authUrl() {
-        return "http://localhost:9000/";
+        return "";
     }
 
     @Override
     public String gatewayUrl() {
-        return "http://localhost:8090/";
+        return "";
     }
 
     @Override
     public String userdataUrl() {
-        return "http://localhost:8089/";
+        return "";
     }
 
     @Override
     public String spendUrl() {
-        return "http://localhost:8093/";
+        return "";
     }
 
     @Override
     public String githubUrl() {
-        return "https://api.github.com/";
+        return "";
     }
 
     @Override
     public String authJdbcUrl() {
-        return "jdbc:postgresql://localhost:5432/niffler-auth";
+        return "";
     }
 
     @Override
     public String userdataJdbcUrl() {
-        return "jdbc:postgresql://localhost:5432/niffler-userdata";
+        return "";
     }
 
     @Override
     public String currencyJdbcUrl() {
-        return "jdbc:postgresql://localhost:5432/niffler-currency";
+        return "";
     }
 
     @Override
     public String spendJdbcUrl() {
-        return "jdbc:postgresql://localhost:5432/niffler-spend";
+        return "";
     }
 }

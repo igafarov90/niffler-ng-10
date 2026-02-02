@@ -8,6 +8,7 @@ import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     private static final AuthUserDao authUserDao = new AuthUserDaoJdbc();
     private static final AuthAuthorityDao authorityDao = new AuthAuthorityDaoJdbc();
 
+    @Nonnull
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
         AuthUserEntity authUser = authUserDao.create(user);
@@ -27,6 +29,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         return authUser;
     }
 
+    @Nonnull
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
         return authUserDao.update(user);

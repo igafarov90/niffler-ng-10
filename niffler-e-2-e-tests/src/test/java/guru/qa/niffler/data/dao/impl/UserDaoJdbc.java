@@ -8,6 +8,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class UserDaoJdbc implements UserDao {
     private static final Logger logger = LoggerFactory.getLogger(UserDaoJdbc.class);
 
 
+    @Nonnull
     @Override
     public UserEntity create(UserEntity user) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -105,6 +107,7 @@ public class UserDaoJdbc implements UserDao {
         }
     }
 
+    @Nonnull
     @Override
     public UserEntity update(UserEntity user) {
         throw new UnsupportedOperationException("Not implemented :(");
@@ -128,6 +131,7 @@ public class UserDaoJdbc implements UserDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<UserEntity> findAll() {
         List<UserEntity> users = new ArrayList<>();

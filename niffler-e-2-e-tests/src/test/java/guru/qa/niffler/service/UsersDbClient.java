@@ -13,18 +13,23 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.utils.RandomDataUtils;
+import io.qameta.allure.Step;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-
+@ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private static final String DEFAULT_PASSWORD = "12345";
 
     private final UserRepository userRepository = new UserRepositoryHibernate();
 
@@ -35,18 +40,22 @@ public class UsersDbClient implements UsersClient {
             CFG.userdataJdbcUrl()
     );
 
+    @Nonnull
     @Override
+    @Step("Создать нового пользователя с именем: {username}")
     public UserJson createUser(String username, String password) {
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
                     AuthUserEntity authUser = authUserEntity(username, password);
                     authUserRepository.create(authUser);
                     return UserJson.fromEntity(
                             userRepository.create(userEntity(username)));
                 }
-        );
+        ));
     }
 
+    @Nonnull
     @Override
+    @Step("Создать {count} входящих приглашений для пользователя: {targetUser.username}")
     public List<UserJson> createIncomeInvitations(UserJson targetUser, int count) {
         final List<UserJson> result = new ArrayList<>();
         if (count > 0) {
@@ -56,7 +65,7 @@ public class UsersDbClient implements UsersClient {
             for (int i = 0; i < count; i++) {
                 xaTransactionTemplate.execute(() -> {
                             String username = RandomDataUtils.randomUsername();
-                            AuthUserEntity authUser = authUserEntity(username, pe.encode("12345"));
+                            AuthUserEntity authUser = authUserEntity(username, pe.encode(DEFAULT_PASSWORD));
                             authUserRepository.create(authUser);
                             UserEntity requester = userRepository.create(userEntity(username));
                             userRepository.sendInvitation(targetEntity, requester);
@@ -70,7 +79,9 @@ public class UsersDbClient implements UsersClient {
         return result;
     }
 
+    @Nonnull
     @Override
+    @Step("Создать {count} исходящих приглашений от пользователя: {targetUser.username}")
     public List<UserJson> createOutcomeInvitations(UserJson targetUser, int count) {
         final List<UserJson> result = new ArrayList<>();
         if (count > 0) {
@@ -81,7 +92,7 @@ public class UsersDbClient implements UsersClient {
             for (int i = 0; i < count; i++) {
                 xaTransactionTemplate.execute(() -> {
                             String username = RandomDataUtils.randomUsername();
-                            AuthUserEntity authUser = authUserEntity(username, pe.encode("12345"));
+                            AuthUserEntity authUser = authUserEntity(username, pe.encode(DEFAULT_PASSWORD));
                             authUserRepository.create(authUser);
                             UserEntity addressee = userRepository.create(userEntity(username));
                             userRepository.sendInvitation(addressee, targetEntity);
@@ -94,6 +105,7 @@ public class UsersDbClient implements UsersClient {
         return result;
     }
 
+    @Nonnull
     @Override
     public List<UserJson> createFriends(UserJson targetUser, int count) {
         final List<UserJson> result = new ArrayList<>();
@@ -105,7 +117,7 @@ public class UsersDbClient implements UsersClient {
             for (int i = 0; i < count; i++) {
                 xaTransactionTemplate.execute(() -> {
                             String username = RandomDataUtils.randomUsername();
-                            AuthUserEntity authUser = authUserEntity(username, pe.encode("12345"));
+                            AuthUserEntity authUser = authUserEntity(username, pe.encode(DEFAULT_PASSWORD));
                             authUserRepository.create(authUser);
                             UserEntity addressee = userRepository.create(userEntity(username));
                             userRepository.addFriend(targetEntity, addressee);
@@ -118,6 +130,7 @@ public class UsersDbClient implements UsersClient {
         return result;
     }
 
+    @Nonnull
     private static UserEntity userEntity(String username) {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(username);
@@ -125,6 +138,7 @@ public class UsersDbClient implements UsersClient {
         return userEntity;
     }
 
+    @Nonnull
     private static AuthUserEntity authUserEntity(String username, String password) {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(username);

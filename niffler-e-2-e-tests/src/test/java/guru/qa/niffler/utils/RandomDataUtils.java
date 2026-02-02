@@ -17,6 +17,11 @@ public class RandomDataUtils {
         return faker.name().lastName();
     }
 
+    public static Double randomAmount() {
+        String digits = faker.number().digits(4);
+        return Double.parseDouble(digits);
+    }
+
     public static String randomCategoryName() {
         return faker.esports().game();
     }

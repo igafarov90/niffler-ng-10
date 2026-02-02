@@ -1,11 +1,17 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
+@ParametersAreNonnullByDefault
 public class RegisterPage {
+
     private final SelenideElement usernameInput = $("#username");
     private final SelenideElement passwordInput = $("#password");
     private final SelenideElement passwordSubmitInput = $("#passwordSubmit");
@@ -14,26 +20,30 @@ public class RegisterPage {
     private final SelenideElement successRegisterMessage = $(".form__paragraph.form__paragraph_success");
     private final SelenideElement helperText = $(".form__error");
 
-
-    public RegisterPage setUsername(String username) {
+    @Step("Ввести имя пользователя: {username}")
+    public RegisterPage setUsername(@Nonnull String username) {
         usernameInput.val(username);
         return this;
     }
 
-    public RegisterPage setPassword(String password) {
+    @Step("Ввести пароль")
+    public RegisterPage setPassword(@Nonnull String password) {
         passwordInput.val(password);
         return this;
     }
 
-    public RegisterPage setSubmitPassword(String password) {
+    @Step("Подтвердить пароль")
+    public RegisterPage setSubmitPassword(@Nonnull String password) {
         passwordSubmitInput.val(password);
         return this;
     }
 
+    @Step("Нажать кнопку 'Sign Up'")
     public void clickSignUp() {
         signUpBtn.click();
     }
 
+    @Step("Заполнить и отправить форму регистрации: username={username}")
     public RegisterPage fillAndSubmitRegisterForm(String username, String password) {
         setUsername(username)
                 .setPassword(password)
@@ -42,17 +52,20 @@ public class RegisterPage {
         return this;
     }
 
-    public RegisterPage checkSuccessRegisterMessage(String value) {
+    @Step("Проверить сообщение об успешной регистрации: '{value}'")
+    public RegisterPage checkSuccessRegisterMessage(@Nonnull String value) {
         successRegisterMessage.shouldHave(text(value));
         return this;
     }
 
+    @Step("Перейти к форме входа после регистрации")
     public LoginPage submitRegistration() {
         signInBtn.click();
         return new LoginPage();
     }
 
-    public RegisterPage checkHelperMessage(String value) {
+    @Step("Проверить сообщение: '{value}'")
+    public RegisterPage checkHelperMessage(@Nonnull String value) {
         helperText.shouldHave(text(value));
         return this;
     }

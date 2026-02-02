@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -21,6 +22,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
     private static final Config CFG = Config.getInstance();
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
 
+    @Nonnull
     @Override
     public SpendEntity create(SpendEntity spend) {
         KeyHolder kh = new GeneratedKeyHolder();
@@ -62,6 +64,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
         );
     }
 
+    @Nonnull
     @Override
     public List<SpendEntity> findAll() {
         return jdbcTemplate.query(
@@ -70,6 +73,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
         );
     }
 
+    @Nonnull
     @Override
     public SpendEntity update(SpendEntity spend) {
         jdbcTemplate.update(
