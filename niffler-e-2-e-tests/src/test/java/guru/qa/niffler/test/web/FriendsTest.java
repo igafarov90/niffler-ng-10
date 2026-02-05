@@ -1,7 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.helpers.ToastMessages;
+import guru.qa.niffler.helpers.SnackbarMessages;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.TestMethodContextExtension;
@@ -70,8 +70,7 @@ public class FriendsTest {
                 .searchFriend(user.testData().incomeInvitations().getFirst().username())
                 .checkFriendsRequest(user.testData().incomeInvitations().getFirst().username())
                 .acceptFriendRequest()
-                .getToast()
-                .shouldHaveText(ToastMessages.friendAccepted(user.testData().incomeInvitations().getFirst().username()));
+                .checkSnackBarText(SnackbarMessages.friendAccepted(user.testData().incomeInvitations().getFirst().username()));
     }
 
     @DisplayName("Отклонение заявки в друзья")
@@ -86,8 +85,7 @@ public class FriendsTest {
                 .searchFriend(user.testData().incomeInvitations().getFirst().username())
                 .checkFriendsRequest(user.testData().incomeInvitations().getFirst().username())
                 .declineFriendRequest()
-                .getToast()
-                .shouldHaveText(ToastMessages.friendDeclined(user.testData().incomeInvitations().getFirst().username()));
+                .checkSnackBarText(SnackbarMessages.friendDeclined(user.testData().incomeInvitations().getFirst().username()));
     }
 
     @DisplayName("Исходящий запрос дружбы отображается при поиске в таблице 'all people'")

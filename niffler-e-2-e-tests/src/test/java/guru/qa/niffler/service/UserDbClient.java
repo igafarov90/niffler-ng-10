@@ -7,8 +7,6 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
-import guru.qa.niffler.data.repository.impl.UserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
@@ -25,15 +23,15 @@ import java.util.List;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-public class UsersDbClient implements UsersClient {
+public final class UserDbClient implements UserClient {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private static final String DEFAULT_PASSWORD = "12345";
 
-    private final UserRepository userRepository = new UserRepositoryHibernate();
+    private final UserRepository userRepository = UserRepository.getInstance();
 
-    private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
+    private final AuthUserRepository authUserRepository = AuthUserRepository.getInstance();
 
     private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
             CFG.authJdbcUrl(),

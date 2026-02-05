@@ -7,7 +7,7 @@ import retrofit2.http.*;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public interface UsersApi {
+public interface UserApi {
     @GET("internal/users/current")
     Call<UserJson> currentUser(@Query("username") String username);
 

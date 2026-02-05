@@ -29,16 +29,16 @@ public class RegistrationTest {
     void shouldRegisterNewUser(){
         String username = RandomDataUtils.randomUsername();
         String password = RandomDataUtils.randomPassword(3,12);
-        registerPage.fillAndSubmitRegisterForm(username, password);
-        registerPage.checkSuccessRegisterMessage(SUCCESS_REGISTER_MESSAGE);
+        registerPage.fillAndSubmitRegisterForm(username, password)
+        .checkSuccessRegisterMessage(SUCCESS_REGISTER_MESSAGE);
     }
 
     @Test
     void shouldNotRegisterUserWithExistingUsername(){
         String password = RandomDataUtils.randomPassword(3,12);
-        registerPage.fillAndSubmitRegisterForm(EXISTING_USER, password);
         String message = ErrorMessages.usernameAlreadyExists(EXISTING_USER);
-        registerPage.checkHelperMessage(message);
+        registerPage.fillAndSubmitRegisterForm(EXISTING_USER, password)
+        .checkHelperMessage(message);
     }
 
     @Test
@@ -46,11 +46,11 @@ public class RegistrationTest {
         String username = RandomDataUtils.randomUsername();
         String password = RandomDataUtils.randomPassword(3,12);
         String confirmPassword = RandomDataUtils.randomPassword(3,12);
+        String message = ErrorMessages.getPasswordMatchError();
         registerPage.setSubmitPassword(confirmPassword)
                 .setPassword(password)
                 .setUsername(username)
-                .clickSignUp();
-        String message = ErrorMessages.getPasswordMatchError();
-        registerPage.checkHelperMessage(message);
+                .clickSignUp()
+        .checkHelperMessage(message);
     }
 }

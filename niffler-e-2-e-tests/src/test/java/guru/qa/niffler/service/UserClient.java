@@ -7,7 +7,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public interface UsersClient {
+public interface UserClient {
 
     @Nonnull
     UserJson createUser(String username, String password);

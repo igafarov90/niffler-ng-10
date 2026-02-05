@@ -5,7 +5,6 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.SearchField;
-import guru.qa.niffler.page.component.Toast;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
@@ -17,7 +16,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class FriendsPage {
+public class FriendsPage extends BasePage<FriendsPage> {
 
     private final ElementsCollection friendsRows = $$("#friends tr");
     private final ElementsCollection requestsRows = $$("#requests tr");
@@ -30,12 +29,6 @@ public class FriendsPage {
     private final SelenideElement popUp = $("[role='dialog']");
 
     SearchField searchField = new SearchField();
-    Toast toast = new Toast();
-
-    @Nonnull
-    public Toast getToast() {
-        return toast;
-    }
 
     @Step("Проверить, что друг '{expectedFriendName}' отображается в списке друзей")
     public FriendsPage checkThatFriendIsVisible(@Nonnull String expectedFriendName) {

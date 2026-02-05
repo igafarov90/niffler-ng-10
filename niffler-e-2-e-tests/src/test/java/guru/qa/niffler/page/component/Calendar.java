@@ -6,7 +6,6 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,13 +16,17 @@ import static com.codeborne.selenide.Selenide.$$;
 import static java.util.Calendar.*;
 
 @ParametersAreNonnullByDefault
-public class Calendar {
+public class Calendar extends BaseComponent<Calendar> {
 
     private final SelenideElement calendarButton = $("button[aria-label*='Choose date']");
     private final SelenideElement previousMonthBtn = $("button[title='Previous month']");
     private final SelenideElement nextMonthBtn = $("button[title='Next month']");
     private final SelenideElement currentDateLabel = $(".MuiPickersCalendarHeader-label");
     private final ElementsCollection dateRows = $$(".MuiDayCalendar-weekContainer");
+
+    public Calendar() {
+        super($("[name='date']").parent());
+    }
 
     @Step("Выбрать дату: {date}")
     public Calendar selectDateInCalendar(@Nonnull Date date) {

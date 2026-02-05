@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byTagAndText;
 import static com.codeborne.selenide.Selenide.$;
 
-public class MainPage {
+public class MainPage extends BasePage<MainPage> {
     private final SelenideElement spendingTable = $("#spendings");
     private final SelenideElement statisticsComponent = $(byTagAndText("h2", "Statistics"));
     private final SelenideElement historyOfSpendingsComponent =
