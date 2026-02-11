@@ -8,11 +8,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.jpa.EntityManagers.em;
 
+@ParametersAreNonnullByDefault
 public class UserRepositoryHibernate implements UserRepository {
 
     private static final Config CFG = Config.getInstance();
@@ -26,11 +28,13 @@ public class UserRepositoryHibernate implements UserRepository {
         return user;
     }
 
+    @Nonnull
     @Override
     public Optional<UserEntity> findById(UUID id) {
         return Optional.ofNullable(entityManager.find(UserEntity.class, id));
     }
 
+    @Nonnull
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         try {

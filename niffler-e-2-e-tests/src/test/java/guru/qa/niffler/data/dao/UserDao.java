@@ -13,9 +13,9 @@ public interface UserDao {
 
     @Nonnull
     UserEntity create(UserEntity user);
-
+    @Nonnull
     Optional<UserEntity> findByUsername(String username);
-
+    @Nonnull
     Optional<UserEntity> findById(UUID id);
 
     void delete(UserEntity user);

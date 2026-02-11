@@ -16,9 +16,9 @@ public interface CategoryDao {
 
     @Nonnull
     CategoryEntity update(CategoryEntity category);
-
+    @Nonnull
     Optional<CategoryEntity> findByUsernameAndCategoryName(String username, String categoryName);
-
+    @Nonnull
     Optional<CategoryEntity> findById(UUID id);
 
     void delete(CategoryEntity category);

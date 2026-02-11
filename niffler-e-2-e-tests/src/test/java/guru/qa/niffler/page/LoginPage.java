@@ -18,36 +18,41 @@ public class LoginPage {
     private final SelenideElement header = $("h1");
     private final SelenideElement errorMessage = $(".form__error");
 
+    @Nonnull
     @Step("Логин в систему пользователя под пользователем с логином {username} и паролем {password}")
-    public MainPage login(@Nonnull String username, @Nonnull String password) {
+    public MainPage login(String username, String password) {
         usernameInput.val(username);
         passwordInput.val(password);
         submitBtn.click();
         return new MainPage();
     }
 
+    @Nonnull
     @Step("Логин несуществующего пользователя в системе")
-    public LoginPage loginWithError(@Nonnull String username, @Nonnull String password) {
+    public LoginPage loginWithError(String username, String password) {
         usernameInput.val(username);
         passwordInput.val(password);
         submitBtn.click();
         return this;
     }
 
+    @Nonnull
     @Step("Открыть страницу регистрации")
     public RegisterPage openRegistrationPage() {
         registerBtn.click();
         return new RegisterPage();
     }
 
+    @Nonnull
     @Step("Проверить заголовок страницы регистрации")
-    public LoginPage checkPageHeader(@Nonnull String value) {
+    public LoginPage checkPageHeader(String value) {
         header.shouldHave(text(value));
         return this;
     }
 
+    @Nonnull
     @Step("Проверить сообщение об ошибке при логине")
-    public LoginPage checkErrorMessage(@Nonnull String value) {
+    public LoginPage checkErrorMessage(String value) {
         errorMessage.shouldHave(text(value));
         return this;
     }

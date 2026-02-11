@@ -22,13 +22,13 @@ public interface SpendRepository {
 
     @Nonnull
     CategoryEntity createCategory(CategoryEntity category);
-
+    @Nonnull
     Optional<CategoryEntity> findCategoryById(UUID id);
-
+    @Nonnull
     Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name);
-
+    @Nonnull
     Optional<SpendEntity> findById(UUID id);
-
+    @Nonnull
     Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description);
 
     void remove(SpendEntity spend);

@@ -10,9 +10,11 @@ import guru.qa.niffler.data.repository.SpendRepository;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositorySpringJdbc implements SpendRepository {
 
     private static final SpendDao spendDao = new SpendDaoSpringJdbc();
@@ -48,21 +50,25 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
         return categoryDao.create(category);
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         return categoryDao.findById(id);
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name) {
         return categoryDao.findByUsernameAndCategoryName(username, name);
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findById(UUID id) {
         return spendDao.findById(id);
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         return spendDao.findByUsernameAndSpendDescription(username, description);

@@ -6,6 +6,7 @@ import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.mapper.FriendshipEntityRowMapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class FriendshipDaoJdbc implements FriendshipDao {
     private static final Config CFG = Config.getInstance();
 
@@ -33,6 +35,7 @@ public class FriendshipDaoJdbc implements FriendshipDao {
         }
     }
 
+    @Nonnull
     @Override
     public Optional<FriendshipEntity> findById(UUID requesterId, UUID addresseeId) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(

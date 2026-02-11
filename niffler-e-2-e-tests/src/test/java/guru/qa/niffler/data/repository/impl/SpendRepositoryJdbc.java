@@ -20,7 +20,6 @@ public class SpendRepositoryJdbc implements SpendRepository {
 
     @Nonnull
     @Override
-
     public SpendEntity create(SpendEntity spend) {
         if (spend.getCategory().getId() == null || categoryDao.findById(spend.getCategory().getId()).isEmpty()) {
             spend.setCategory(
@@ -48,21 +47,25 @@ public class SpendRepositoryJdbc implements SpendRepository {
         return categoryDao.create(category);
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         return categoryDao.findById(id);
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name) {
         return categoryDao.findByUsernameAndCategoryName(username, name);
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findById(UUID id) {
         return spendDao.findById(id);
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         return spendDao.findByUsernameAndSpendDescription(username, description);

@@ -4,6 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.*;
 import io.qameta.allure.Step;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Selectors.byTagAndText;
@@ -21,6 +22,7 @@ public class Header {
     private final SelenideElement mainIcon = self.$("a[href='/main']");
     private final SelenideElement newSpendingBtnIcon = self.$("a[href='/spending']");
 
+    @Nonnull
     @Step("Перейти к странице 'Friends'")
     public FriendsPage toFriendsPage() {
         profileIcon.click();
@@ -28,6 +30,7 @@ public class Header {
         return new FriendsPage();
     }
 
+    @Nonnull
     @Step("Перейти к странице 'All people'")
     public PeoplePage toAllPeoplePage() {
         profileIcon.click();
@@ -35,6 +38,7 @@ public class Header {
         return new PeoplePage();
     }
 
+    @Nonnull
     @Step("Перейти к странице 'Profile'")
     public ProfilePage toProfilePage() {
         profileIcon.click();
@@ -42,6 +46,7 @@ public class Header {
         return new ProfilePage();
     }
 
+    @Nonnull
     @Step("Перейти к странице 'Login'")
     public LoginPage signOut() {
         profileIcon.click();
@@ -49,12 +54,14 @@ public class Header {
         return new LoginPage();
     }
 
+    @Nonnull
     @Step("Перейти к странице 'Spendings'")
     public EditSpendingPage addSpendingPage() {
         newSpendingBtnIcon.click();
         return new EditSpendingPage();
     }
 
+    @Nonnull
     @Step("Перейти к странице 'Main'")
     public MainPage toMainPage() {
         mainIcon.click();

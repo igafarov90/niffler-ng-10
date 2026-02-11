@@ -15,12 +15,14 @@ public class Toast {
 
     private final SelenideElement container = $(".MuiAlert-message");
 
+    @Nonnull
     @Step("Проверить текст всплывающего сообщения")
-    public Toast shouldHaveText(@Nonnull String text) {
+    public Toast shouldHaveText(String text) {
         container.shouldHave(text(text));
         return this;
     }
 
+    @Nonnull
     @Step("Проверить отображение всплывающего сообщения")
     public Toast shouldBeVisible() {
         container.shouldBe(visible);

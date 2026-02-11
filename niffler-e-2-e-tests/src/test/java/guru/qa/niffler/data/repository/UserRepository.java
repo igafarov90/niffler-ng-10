@@ -12,9 +12,9 @@ public interface UserRepository {
 
     @Nonnull
     UserEntity create(UserEntity user);
-
+    @Nonnull
     Optional<UserEntity> findById(UUID id);
-
+    @Nonnull
     Optional<UserEntity> findByUsername(String username);
 
     @Nonnull

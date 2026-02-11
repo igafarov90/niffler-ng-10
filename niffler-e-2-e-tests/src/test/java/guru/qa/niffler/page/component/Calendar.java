@@ -3,10 +3,12 @@ package guru.qa.niffler.page.component;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import org.junit.jupiter.api.Assertions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import java.text.SimpleDateFormat;
 import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -15,6 +17,8 @@ import static com.codeborne.selenide.Condition.matchText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static java.util.Calendar.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ParametersAreNonnullByDefault
 public class Calendar {
@@ -25,8 +29,9 @@ public class Calendar {
     private final SelenideElement currentDateLabel = $(".MuiPickersCalendarHeader-label");
     private final ElementsCollection dateRows = $$(".MuiDayCalendar-weekContainer");
 
+    @Nonnull
     @Step("Выбрать дату: {date}")
-    public Calendar selectDateInCalendar(@Nonnull Date date) {
+    public Calendar selectDateInCalendar(Date date) {
         java.util.Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
 
@@ -102,6 +107,7 @@ public class Calendar {
         return selectDateInCalendar(calendar.getTime());
     }
 
+    @Nonnull
     @Step("Открыть календарь")
     public Calendar open() {
         calendarButton.click();
@@ -110,18 +116,18 @@ public class Calendar {
 
     @Step("Получить выбранную дату")
     @Nonnull
-    public String getSelectedDate() {
+    private String getSelectedDate() {
         return calendarButton.getAttribute("value") != null
                 ? calendarButton.getAttribute("value")
                 : calendarButton.getText();
     }
 
+    @Nonnull
     @Step("Проверить, что выбрана дата: {expectedDate}")
     public Calendar verifySelectedDate(Date expectedDate) {
-        java.util.Calendar calendar = new GregorianCalendar();
-        calendar.setTime(expectedDate);
-
-        String selectedDate = getSelectedDate();
+        String expected = new SimpleDateFormat("dd.MM.yyyy").format(expectedDate);
+        String actual = getSelectedDate();
+        assertEquals(expected, actual);
         return this;
     }
 }

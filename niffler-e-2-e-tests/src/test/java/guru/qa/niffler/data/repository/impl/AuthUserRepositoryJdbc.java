@@ -9,9 +9,11 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
     private static final AuthUserDao authUserDao = new AuthUserDaoJdbc();
@@ -35,6 +37,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         return authUserDao.update(user);
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         return authUserDao.findById(id).map(userEntity -> {
@@ -43,6 +46,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         });
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         return authUserDao.findByUsername(username).map(userEntity -> {

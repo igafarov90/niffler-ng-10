@@ -11,10 +11,12 @@ import guru.qa.niffler.model.SpendJson;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class SpendDbClient implements SpendClient {
 
     private final SpendRepository spendRepository = new SpendRepositoryHibernate();
@@ -34,6 +36,7 @@ public class SpendDbClient implements SpendClient {
         }));
     }
 
+    @Nonnull
     @Override
     @Step("Найти категорию пользователя: username={username}, name={name}")
     public Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
@@ -41,6 +44,7 @@ public class SpendDbClient implements SpendClient {
                 .map(CategoryJson::fromEntity);
     }
 
+    @Nonnull
     @Override
     @Step("Найти категорию по ID: {id}")
     public Optional<CategoryJson> findCategoryById(UUID id) {
@@ -48,6 +52,7 @@ public class SpendDbClient implements SpendClient {
                 .map(CategoryJson::fromEntity);
     }
 
+    @Nonnull
     @Override
     @Step("Найти трату по ID: {id}")
     public Optional<SpendJson> findById(UUID id) {
@@ -55,6 +60,7 @@ public class SpendDbClient implements SpendClient {
                 .map(SpendJson::fromEntity);
     }
 
+    @Nonnull
     @Override
     @Step("Найти трату пользователя: username={username}, description={description}")
     public Optional<SpendJson> findByUsernameAndSpendDescription(String username, String description) {

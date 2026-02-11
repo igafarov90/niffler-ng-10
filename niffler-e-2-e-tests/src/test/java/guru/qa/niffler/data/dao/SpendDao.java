@@ -13,7 +13,7 @@ public interface SpendDao {
 
     @Nonnull
     SpendEntity create(SpendEntity spend);
-
+    @Nonnull
     Optional<SpendEntity> findById(UUID id);
 
     void delete(SpendEntity spend);
@@ -23,6 +23,6 @@ public interface SpendDao {
 
     @Nonnull
     SpendEntity update(SpendEntity spend);
-
+    @Nonnull
     Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description);
 }

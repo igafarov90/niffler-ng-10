@@ -29,31 +29,34 @@ public class FriendsPage {
     private final SelenideElement chipWaiting = $(byTagAndText("span", "Waiting..."));
     private final SelenideElement popUp = $("[role='dialog']");
 
-    SearchField searchField = new SearchField();
-    Toast toast = new Toast();
+    private final SearchField searchField = new SearchField();
+    private final Toast toast = new Toast();
 
     @Nonnull
     public Toast getToast() {
         return toast;
     }
 
+    @Nonnull
     @Step("Проверить, что друг '{expectedFriendName}' отображается в списке друзей")
-    public FriendsPage checkThatFriendIsVisible(@Nonnull String expectedFriendName) {
+    public FriendsPage checkThatFriendIsVisible(String expectedFriendName) {
         searchField.search(expectedFriendName);
         friendsRows.findBy(Condition.text(expectedFriendName))
                 .shouldBe(Condition.visible);
         return this;
     }
 
+    @Nonnull
     @Step("Проверить наличие входящего запроса в друзья от пользователя: '{user}'")
-    public FriendsPage checkFriendsRequest(@Nonnull String user) {
+    public FriendsPage checkFriendsRequest(String user) {
         requestsRows.findBy(Condition.text(user))
                 .shouldBe(Condition.visible);
         return this;
     }
 
+    @Nonnull
     @Step("Проверить, что у пользователя '{user}' статус 'В ожидании'")
-    public FriendsPage checkStatusWaiting(@Nonnull String user) {
+    public FriendsPage checkStatusWaiting(String user) {
         String text = chipWaiting.getText();
         peopleRows.findBy(Condition.text(user))
                 .shouldHave(Condition.visible)
@@ -61,36 +64,42 @@ public class FriendsPage {
         return this;
     }
 
+    @Nonnull
     @Step("Проверить, что таблица друзей пустая")
     public FriendsPage checkThatFriendTableIsEmpty() {
         friendsRows.shouldBe(CollectionCondition.empty);
         return this;
     }
 
+    @Nonnull
     @Step("Проверить наличие сообщения 'There are no users yet'")
     public FriendsPage checkThatNoUsersMessageIsPresent() {
         noUsersMessage.isEnabled();
         return this;
     }
 
+    @Nonnull
     @Step("Перейти на вкладку 'All people'")
     public FriendsPage clickAllPeopleTab() {
         allPeopleTab.click();
         return this;
     }
 
+    @Nonnull
     @Step("Поиск друга {friendName}")
-    public FriendsPage searchFriend(@Nonnull String friendName) {
+    public FriendsPage searchFriend(String friendName) {
         searchField.search(friendName);
         return this;
     }
 
+    @Nonnull
     @Step("Принять дружбу")
     public FriendsPage acceptFriendRequest() {
         acceptBtn.click();
         return this;
     }
 
+    @Nonnull
     @Step("Отклонить дружбу")
     public FriendsPage declineFriendRequest() {
         declineBtn.click();
