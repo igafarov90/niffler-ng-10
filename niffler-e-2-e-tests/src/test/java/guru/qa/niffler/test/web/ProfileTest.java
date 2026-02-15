@@ -1,7 +1,6 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.helpers.ToastMessages;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Selenide.open;
+import static guru.qa.niffler.helpers.SnackbarMessages.PROFILE_UPDATED;
 
 
 @ExtendWith(
@@ -68,8 +68,6 @@ public class ProfileTest {
                 .setNewName(RandomDataUtils.randomName())
                 .addCategory(category)
                 .saveChanges()
-                .checkCategoryExists(category)
-                .getToast()
-                .shouldHaveText(ToastMessages.PROFILE_UPDATED);
+                .checkSnackBarText(PROFILE_UPDATED);
     }
 }

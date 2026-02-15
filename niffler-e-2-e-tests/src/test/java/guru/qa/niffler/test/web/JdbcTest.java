@@ -12,15 +12,17 @@ import guru.qa.niffler.data.repository.impl.*;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
+import guru.qa.niffler.jupiter.extension.SpendClientInjector;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.SpendDbClient;
-import guru.qa.niffler.service.UsersDbClient;
+import guru.qa.niffler.service.UserDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -234,7 +236,7 @@ public class JdbcTest {
 
     @Test
     void createUserHibernateTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
+        UserDbClient usersDbClient = new UserDbClient();
         UserJson user = usersDbClient.createUser(
                 "RND9", "12345");
         usersDbClient.createOutcomeInvitations(user, 1);
@@ -437,6 +439,31 @@ public class JdbcTest {
         spendClient.remove(createdSpend);
         spendClient.removeCategory(createdCategory);
     }
+
+    SpendClient spendClient;
+
+    @ExtendWith(SpendClientInjector.class)
+    @Test
+    void createSpendWithInjectorTest() {
+        SpendJson spendJson = spendClient.create(
+                new SpendJson(
+                        null,
+                        new Date(),
+                        new CategoryJson(
+                                null,
+                                RandomDataUtils.randomCategoryName(),
+                                "duck",
+                                false
+                        ),
+                        CurrencyValues.RUB,
+                        1000.0,
+                        "cat-name-tx",
+                        "duck"
+                )
+        );
+        System.out.println(spendJson);
+    }
+
 }
 
 

@@ -1,54 +1,70 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.api.UsersApi;
-import guru.qa.niffler.config.Config;
+import com.google.common.base.Stopwatch;
+import guru.qa.niffler.api.UserApi;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.utils.RandomDataUtils;
 import io.qameta.allure.Step;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ParametersAreNonnullByDefault
-public class UsersApiClient implements UsersClient {
+public final class UserApiClient extends RestClient implements UserClient {
 
-    private static final Config CFG = Config.getInstance();
-    private static final CookieManager cm = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
+    private final UserApi userApi;
+    private final AuthApiClient authApiClient;
 
-    private final Retrofit userRetrofit = new Retrofit.Builder()
-            .baseUrl(CFG.userdataUrl())
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build();
-
-    private final UsersApi usersApi = userRetrofit.create(UsersApi.class);
-    AuthApiClient authApiClient = new AuthApiClient();
+    public UserApiClient() {
+        super(CFG.userdataUrl());
+        this.userApi = create(UserApi.class);
+        this.authApiClient = new AuthApiClient();
+    }
 
     @Nonnull
     @Override
     @Step("Создать нового пользователя с именем: {username}")
     public UserJson createUser(String username, String password) {
-        Response<UserJson> response;
         try {
-            Response<Void> authResponse = authApiClient.register(username, password);
-            assertEquals(HTTP_OK, authResponse.code());
-            response = usersApi.currentUser(username).execute();
-            assertEquals(HTTP_OK, response.code());
-        } catch (IOException e) {
-            throw new AssertionError(e);
+            authApiClient.register(username, password);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
-        return Objects.requireNonNull(response.body());
+
+        Stopwatch sw = Stopwatch.createStarted();
+        int maxWaitTime = 6000;
+
+        Response<UserJson> response;
+
+        while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
+            try {
+                response = userApi.currentUser(username).execute();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            UserJson user = response.body();
+            if (user != null && user.id() != null) {
+                return user;
+            } else {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        throw new RuntimeException(
+                String.format("Пользователь '%s' не был создан за %d мс", username, maxWaitTime)
+        );
     }
 
     @Nonnull
@@ -60,7 +76,7 @@ public class UsersApiClient implements UsersClient {
             if (count > 0) {
                 for (int i = 0; i < count; i++) {
                     UserJson newUser = createUser(RandomDataUtils.randomUsername(), "12345");
-                    Response<UserJson> response = usersApi.sendInvitation(targetUser.username(), newUser.username()).execute();
+                    Response<UserJson> response = userApi.sendInvitation(targetUser.username(), newUser.username()).execute();
                     assertEquals(HTTP_OK, response.code());
                     result.add(newUser);
                 }
@@ -80,7 +96,7 @@ public class UsersApiClient implements UsersClient {
             if (count > 0) {
                 for (int i = 0; i < count; i++) {
                     UserJson newUser = createUser(RandomDataUtils.randomUsername(), "12345");
-                    Response<UserJson> responseSendInvitation = usersApi.sendInvitation(newUser.username(), targetUser.username()).execute();
+                    Response<UserJson> responseSendInvitation = userApi.sendInvitation(newUser.username(), targetUser.username()).execute();
                     assertEquals(HTTP_OK, responseSendInvitation.code());
                     result.add(targetUser);
                 }
@@ -100,9 +116,9 @@ public class UsersApiClient implements UsersClient {
             if (count > 0) {
                 for (int i = 0; i < count; i++) {
                     UserJson newUser = createUser(RandomDataUtils.randomUsername(), "12345");
-                    Response<UserJson> responseSendInvitation = usersApi.sendInvitation(newUser.username(), targetUser.username()).execute();
+                    Response<UserJson> responseSendInvitation = userApi.sendInvitation(newUser.username(), targetUser.username()).execute();
                     assertEquals(HTTP_OK, responseSendInvitation.code());
-                    Response<UserJson> responseAcceptInvitation = usersApi.acceptInvitation(targetUser.username(), newUser.username()).execute();
+                    Response<UserJson> responseAcceptInvitation = userApi.acceptInvitation(targetUser.username(), newUser.username()).execute();
                     assertEquals(HTTP_OK, responseAcceptInvitation.code());
                     result.add(newUser);
                 }

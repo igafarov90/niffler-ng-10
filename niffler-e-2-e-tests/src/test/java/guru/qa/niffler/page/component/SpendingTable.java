@@ -16,9 +16,7 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class SpendingTable {
-
-    private final SelenideElement self = $("#spendings");
+public class SpendingTable extends BaseComponent<SpendingTable> {
 
     private final SelenideElement currencyBox = self.$("#currency");
     private final SelenideElement periodBox = self.$("#period");
@@ -29,6 +27,11 @@ public class SpendingTable {
     private final ElementsCollection spendingRows = self.$("tbody").$$("tr");
 
     private final SearchField searchField = new SearchField();
+
+    public SpendingTable() {
+        super($("#spendings"));
+    }
+
 
     @Nonnull
     @Step("Выбрать период трат: {period}")

@@ -14,14 +14,12 @@ import static com.codeborne.selenide.Selectors.byTagAndText;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class MainPage {
+public class MainPage extends BasePage<MainPage> {
 
     private final SelenideElement spendingTable = $("#spendings");
     private final SelenideElement statisticsComponent = $(byTagAndText("h2", "Statistics"));
     private final SelenideElement historyOfSpendingsComponent =
             $(byTagAndText("h2", "History of Spendings"));
-
-    private final Header header = new Header();
 
     private final SpendingTable spendingTableComponent = new SpendingTable();
 

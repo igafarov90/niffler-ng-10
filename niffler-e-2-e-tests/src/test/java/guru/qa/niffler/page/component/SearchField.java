@@ -10,11 +10,14 @@ import static com.codeborne.selenide.Selectors.by;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class SearchField {
+public class SearchField extends BaseComponent<SearchField> {
 
-    private final SelenideElement self = $("form.MuiBox-root");
     private final SelenideElement searchInput = self.$(by("aria-label", "search"));
     private final SelenideElement clearBtn = self.$("#input-clear");
+
+    public SearchField() {
+        super($("form.MuiBox-root"));
+    }
 
     @Nonnull
     @Step("Установить значение '{expectedText}' в поисковом поле")

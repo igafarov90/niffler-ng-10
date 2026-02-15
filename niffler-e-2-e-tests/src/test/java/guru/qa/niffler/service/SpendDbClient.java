@@ -17,9 +17,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
-public class SpendDbClient implements SpendClient {
+public final class SpendDbClient implements SpendClient {
 
-    private final SpendRepository spendRepository = new SpendRepositoryHibernate();
+    private final SpendRepository spendRepository = SpendRepository.getInstance();
     private static Config CFG = Config.getInstance();
 
     private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(

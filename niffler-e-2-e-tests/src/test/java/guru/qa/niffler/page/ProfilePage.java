@@ -2,8 +2,6 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.page.component.Header;
-import guru.qa.niffler.page.component.Toast;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
@@ -22,13 +20,6 @@ public class ProfilePage {
     private final SelenideElement toggle = $(".MuiSwitch-input");
     private final SelenideElement saveChangesBtn = $("button[type='submit']");
     private final ElementsCollection categoryChip = $$(".MuiChip-root");
-
-    @Nonnull
-    public Toast getToast() {
-        return toast;
-    }
-
-    private final Toast toast = new Toast();
 
     @Nonnull
     @Step("Добавить новую категорию: {categoryName}")

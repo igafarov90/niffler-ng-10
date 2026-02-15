@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class RegisterPage {
+public class RegisterPage extends BasePage<RegisterPage> {
 
     private final SelenideElement usernameInput = $("#username");
     private final SelenideElement passwordInput = $("#password");
@@ -42,8 +42,9 @@ public class RegisterPage {
     }
 
     @Step("Нажать кнопку 'Sign Up'")
-    public void clickSignUp() {
+    public RegisterPage clickSignUp() {
         signUpBtn.click();
+        return this;
     }
 
     @Nonnull

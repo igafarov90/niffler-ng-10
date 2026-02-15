@@ -11,7 +11,7 @@ import static com.codeborne.selenide.Selectors.byTagAndText;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class Header {
+public class Header extends BaseComponent<Header> {
 
     private final SelenideElement self = $("#root header");
     private final SelenideElement profileIcon = self.$("[data-testid='PersonIcon']");
@@ -21,6 +21,10 @@ public class Header {
     private final SelenideElement sigOutItem = $(byTagAndText("li", "Sign out"));
     private final SelenideElement mainIcon = self.$("a[href='/main']");
     private final SelenideElement newSpendingBtnIcon = self.$("a[href='/spending']");
+
+    public Header() {
+        super($("#root header"));
+    }
 
     @Nonnull
     @Step("Перейти к странице 'Friends'")

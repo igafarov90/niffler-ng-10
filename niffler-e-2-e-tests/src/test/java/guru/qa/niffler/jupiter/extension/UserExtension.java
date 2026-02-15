@@ -3,8 +3,8 @@ package guru.qa.niffler.jupiter.extension;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.UsersDbClient;
+import guru.qa.niffler.service.UserClient;
+import guru.qa.niffler.service.UserDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -19,7 +19,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
 
-    private final UsersClient usersClient = new UsersDbClient();
+    private final UserClient userClient = new UserDbClient();
     public static final String DEFAULT_PASSWORD = "12345";
 
     @Override
@@ -28,10 +28,10 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                 .ifPresent(userAnnotation -> {
                     if ("".equals(userAnnotation.username())) {
                         final String username = RandomDataUtils.randomUsername();
-                        final UserJson user = usersClient.createUser(username, DEFAULT_PASSWORD);
-                        final List<UserJson> incomeInvitations = usersClient.createIncomeInvitations(user, userAnnotation.incomeInvitations());
-                        final List<UserJson> outcomeInvitations = usersClient.createOutcomeInvitations(user, userAnnotation.outcomeInvitations());
-                        final List<UserJson> friends = usersClient.createFriends(user, userAnnotation.friends());
+                        final UserJson user = userClient.createUser(username, DEFAULT_PASSWORD);
+                        final List<UserJson> incomeInvitations = userClient.createIncomeInvitations(user, userAnnotation.incomeInvitations());
+                        final List<UserJson> outcomeInvitations = userClient.createOutcomeInvitations(user, userAnnotation.outcomeInvitations());
+                        final List<UserJson> friends = userClient.createFriends(user, userAnnotation.friends());
 
                         final TestData testData = new TestData(
                                 DEFAULT_PASSWORD,
