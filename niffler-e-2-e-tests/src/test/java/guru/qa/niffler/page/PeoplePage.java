@@ -21,14 +21,16 @@ public class PeoplePage extends BasePage<PeoplePage> {
     private final SelenideElement allPeopleTable = $(".MuiTable-root");
     private final ElementsCollection allPeopleRows = allPeopleTable.$$("tbody tr");
 
+    @Nonnull
     @Step("Поиск пользователя с никнеймом {username}")
-    public PeoplePage searchPerson(@Nonnull String username) {
+    public PeoplePage searchPerson(String username) {
         searchField.search(username);
         return this;
     }
 
+    @Nonnull
     @Step("Проверить исходящее приглашение пользователю {username}")
-    public PeoplePage checkOutcomeInvitationShouldBeVisible(@Nonnull String username) {
+    public PeoplePage checkOutcomeInvitationShouldBeVisible(String username) {
         searchField.search(username);
         allPeopleRows.findBy(text(username))
                 .shouldBe(visible)

@@ -14,7 +14,7 @@ public interface AuthUserDao {
 
     @Nonnull
     AuthUserEntity create(AuthUserEntity user);
-
+    @Nonnull
     Optional<AuthUserEntity> findById(UUID id);
 
     void delete(AuthUserEntity user);
@@ -23,6 +23,6 @@ public interface AuthUserDao {
 
     @Nonnull
     List<AuthUserEntity> findAll();
-
+    @Nonnull
     Optional<AuthUserEntity> findByUsername(String username);
 }

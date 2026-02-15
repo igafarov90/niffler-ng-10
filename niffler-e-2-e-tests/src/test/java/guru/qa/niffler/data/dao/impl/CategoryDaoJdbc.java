@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class CategoryDaoJdbc implements CategoryDao {
 
     private static final Config CFG = Config.getInstance();
@@ -59,6 +61,7 @@ public class CategoryDaoJdbc implements CategoryDao {
         }
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findByUsernameAndCategoryName(String username, String categoryName) {
         try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -84,6 +87,7 @@ public class CategoryDaoJdbc implements CategoryDao {
         }
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -107,6 +111,7 @@ public class CategoryDaoJdbc implements CategoryDao {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void delete(CategoryEntity category) {

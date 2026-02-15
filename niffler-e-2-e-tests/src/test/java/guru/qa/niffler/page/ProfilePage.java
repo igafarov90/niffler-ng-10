@@ -13,7 +13,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class ProfilePage extends BasePage<ProfilePage> {
+public class ProfilePage {
     private final SelenideElement usernameInput = $("#username");
     private final SelenideElement nameInput = $("#name");
     private final SelenideElement categoryInput = $("#category");
@@ -21,31 +21,36 @@ public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement saveChangesBtn = $("button[type='submit']");
     private final ElementsCollection categoryChip = $$(".MuiChip-root");
 
+    @Nonnull
     @Step("Добавить новую категорию: {categoryName}")
-    public ProfilePage addCategory(@Nonnull String category) {
+    public ProfilePage addCategory(String category) {
         categoryInput.setValue(category).pressEnter();
         return this;
     }
 
+    @Nonnull
     @Step("Ввести имя новой категории: {categoryName}")
-    public ProfilePage setNewName(@Nonnull String name) {
+    public ProfilePage setNewName(String name) {
         nameInput.clear();
         nameInput.val(name);
         return this;
     }
 
+    @Nonnull
     @Step("Сохранить изменения в профиле")
     public ProfilePage saveChanges() {
         saveChangesBtn.click();
         return this;
     }
 
+    @Nonnull
     @Step("Проверить наличие категории в хлебных крошках: {categoryName}")
-    public ProfilePage checkCategoryExists(@Nonnull String category) {
+    public ProfilePage checkCategoryExists(String category) {
         categoryChip.find(text(category)).shouldBe(visible);
         return this;
     }
 
+    @Nonnull
     @Step("Включить отображение архивных категорий")
     public ProfilePage switchToggle() {
         toggle.click();

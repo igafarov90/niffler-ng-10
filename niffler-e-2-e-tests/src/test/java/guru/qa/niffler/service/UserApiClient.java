@@ -8,6 +8,7 @@ import io.qameta.allure.Step;
 import retrofit2.Response;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ParametersAreNonnullByDefault
 public final class UserApiClient extends RestClient implements UserClient {
 
     private final UserApi userApi;

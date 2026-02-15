@@ -33,23 +33,26 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     }
 
 
+    @Nonnull
     @Step("Выбрать период трат: {period}")
-    public SpendingTable selectPeriod(@Nonnull DataFilterValues period) {
+    public SpendingTable selectPeriod(DataFilterValues period) {
         periodBox.click();
         $(byAttribute("data-value", period.name())).click();
         return this;
     }
 
+    @Nonnull
     @Step("Изменить трату: {description}")
-    public EditSpendingPage editSpending(@Nonnull String description) {
+    public EditSpendingPage editSpending(String description) {
         searchSpendingByDescription(description);
         var row = spendingRows.find(text(description));
         row.$$("td").get(5).click();
         return new EditSpendingPage();
     }
 
+    @Nonnull
     @Step("Удалить трату {description}")
-    public SpendingTable deleteSpending(@Nonnull String description) {
+    public SpendingTable deleteSpending(String description) {
         searchSpendingByDescription(description);
         var row = spendingRows.find(text(description));
         row.$$("td").get(0).click();
@@ -58,14 +61,16 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
         return this;
     }
 
+    @Nonnull
     @Step("Найти в таблице трату {description}")
-    public SpendingTable searchSpendingByDescription(@Nonnull String description) {
+    public SpendingTable searchSpendingByDescription(String description) {
         searchField.search(description);
         return this;
     }
 
+    @Nonnull
     @Step("Проверить, что в таблице присутствуют траты")
-    public SpendingTable checkTableContains(@Nonnull String... expectedSpends) {
+    public SpendingTable checkTableContains(String... expectedSpends) {
         for (int i = 0; i < expectedSpends.length; i++) {
             var expected = expectedSpends[i];
             searchField.clearIfNotEmpty();
@@ -75,8 +80,9 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
         return this;
     }
 
+    @Nonnull
     @Step("Проверить, что размер таблицы равен {expectedSize}")
-    public @Nonnull SpendingTable checkTableSize(int expectedSize) {
+    public SpendingTable checkTableSize(int expectedSize) {
         spendingRows.should(size(expectedSize));
         return this;
     }

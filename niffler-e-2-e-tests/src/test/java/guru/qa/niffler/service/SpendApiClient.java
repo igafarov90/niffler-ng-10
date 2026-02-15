@@ -60,8 +60,9 @@ public final class SpendApiClient extends RestClient implements SpendClient {
     }
 
     @Nonnull
+    @Override
     @Step("POST /internal/spends/add - Создать трату: {spend.description}")
-    public SpendJson createSpend(SpendJson spend) {
+    public SpendJson create(SpendJson spend) {
         final Response<SpendJson> response;
         try {
             response = spendApi.createSpend(spend)
@@ -73,9 +74,10 @@ public final class SpendApiClient extends RestClient implements SpendClient {
         return Objects.requireNonNull(response.body());
     }
 
+    @Override
     @Nonnull
     @Step("PATCH /internal/spends/edit - Редактировать трату: {spend.description}")
-    public SpendJson editSpend(SpendJson spend) {
+    public SpendJson update(SpendJson spend) {
         final Response<SpendJson> response;
         try {
             response = spendApi.editSpend(spend)
@@ -141,18 +143,6 @@ public final class SpendApiClient extends RestClient implements SpendClient {
         return response.body() != null
                 ? response.body()
                 : Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public SpendJson create(SpendJson spend) {
-        throw new UnsupportedOperationException("Not implemented :(");
-    }
-
-    @Nonnull
-    @Override
-    public SpendJson update(SpendJson spend) {
-        throw new UnsupportedOperationException("Not implemented :(");
     }
 
     public void deleteCategory(CategoryJson json) {

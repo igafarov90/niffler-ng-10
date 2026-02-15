@@ -4,16 +4,19 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
+import guru.qa.niffler.data.repository.impl.SpendRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public final class SpendDbClient implements SpendClient {
 
     private final SpendRepository spendRepository = SpendRepository.getInstance();
@@ -33,6 +36,7 @@ public final class SpendDbClient implements SpendClient {
         }));
     }
 
+    @Nonnull
     @Override
     @Step("Найти категорию пользователя: username={username}, name={name}")
     public Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
@@ -40,6 +44,7 @@ public final class SpendDbClient implements SpendClient {
                 .map(CategoryJson::fromEntity);
     }
 
+    @Nonnull
     @Override
     @Step("Найти категорию по ID: {id}")
     public Optional<CategoryJson> findCategoryById(UUID id) {
@@ -47,6 +52,7 @@ public final class SpendDbClient implements SpendClient {
                 .map(CategoryJson::fromEntity);
     }
 
+    @Nonnull
     @Override
     @Step("Найти трату по ID: {id}")
     public Optional<SpendJson> findById(UUID id) {
@@ -54,6 +60,7 @@ public final class SpendDbClient implements SpendClient {
                 .map(SpendJson::fromEntity);
     }
 
+    @Nonnull
     @Override
     @Step("Найти трату пользователя: username={username}, description={description}")
     public Optional<SpendJson> findByUsernameAndSpendDescription(String username, String description) {

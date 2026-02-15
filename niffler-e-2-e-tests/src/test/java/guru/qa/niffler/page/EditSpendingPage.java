@@ -15,26 +15,30 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
     private final SelenideElement amountInput = $("#amount");
     private final SelenideElement categoryInput = $("#category");
 
+    @Nonnull
     @Step("Ввести новое описание траты: '{description}'")
-    public EditSpendingPage setSpendingDescription(@Nonnull String description) {
+    public EditSpendingPage setSpendingDescription(String description) {
         descriptionInput.val(description);
         return this;
     }
 
+    @Nonnull
     @Step("Сохранить изменения траты")
     public MainPage save() {
         saveBtn.click();
         return new MainPage();
     }
 
+    @Nonnull
     @Step("Ввести стоимость {amount}")
-    public EditSpendingPage setAmount(@Nonnull Double amount) {
+    public EditSpendingPage setAmount(Double amount) {
         amountInput.setValue(amount.toString());
         return this;
     }
 
+    @Nonnull
     @Step("Ввести категорию {category}")
-    public EditSpendingPage setCategory(@Nonnull String category) {
+    public EditSpendingPage setCategory(String category) {
         categoryInput.setValue(category);
         return this;
     }

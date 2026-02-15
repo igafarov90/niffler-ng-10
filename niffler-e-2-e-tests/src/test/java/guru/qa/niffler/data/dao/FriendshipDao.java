@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface FriendshipDao {
 
     void create(FriendshipEntity friendship);
-
+    @Nonnull
     Optional<FriendshipEntity> findById(UUID requesterId, UUID addresseeId);
 
     @Nonnull

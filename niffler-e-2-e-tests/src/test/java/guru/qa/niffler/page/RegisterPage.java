@@ -21,19 +21,22 @@ public class RegisterPage extends BasePage<RegisterPage> {
     private final SelenideElement helperText = $(".form__error");
 
     @Step("Ввести имя пользователя: {username}")
-    public RegisterPage setUsername(@Nonnull String username) {
+    @Nonnull
+    public RegisterPage setUsername(String username) {
         usernameInput.val(username);
         return this;
     }
 
     @Step("Ввести пароль")
-    public RegisterPage setPassword(@Nonnull String password) {
+    @Nonnull
+    public RegisterPage setPassword(String password) {
         passwordInput.val(password);
         return this;
     }
 
     @Step("Подтвердить пароль")
-    public RegisterPage setSubmitPassword(@Nonnull String password) {
+    @Nonnull
+    public RegisterPage setSubmitPassword(String password) {
         passwordSubmitInput.val(password);
         return this;
     }
@@ -44,6 +47,7 @@ public class RegisterPage extends BasePage<RegisterPage> {
         return this;
     }
 
+    @Nonnull
     @Step("Заполнить и отправить форму регистрации: username={username}")
     public RegisterPage fillAndSubmitRegisterForm(String username, String password) {
         setUsername(username)
@@ -53,20 +57,23 @@ public class RegisterPage extends BasePage<RegisterPage> {
         return this;
     }
 
+    @Nonnull
     @Step("Проверить сообщение об успешной регистрации: '{value}'")
-    public RegisterPage checkSuccessRegisterMessage(@Nonnull String value) {
+    public RegisterPage checkSuccessRegisterMessage(String value) {
         successRegisterMessage.shouldHave(text(value));
         return this;
     }
 
     @Step("Перейти к форме входа после регистрации")
+    @Nonnull
     public LoginPage submitRegistration() {
         signInBtn.click();
         return new LoginPage();
     }
 
     @Step("Проверить сообщение: '{value}'")
-    public RegisterPage checkHelperMessage(@Nonnull String value) {
+    @Nonnull
+    public RegisterPage checkHelperMessage(String value) {
         helperText.shouldHave(text(value));
         return this;
     }
