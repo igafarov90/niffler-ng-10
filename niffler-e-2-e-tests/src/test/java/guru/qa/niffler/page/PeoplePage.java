@@ -16,7 +16,6 @@ import static com.codeborne.selenide.Selenide.$;
 @ParametersAreNonnullByDefault
 public class PeoplePage extends BasePage<PeoplePage> {
 
-    private final Header header = new Header();
     private final SearchField searchField = new SearchField();
     private final SelenideElement allPeopleTable = $(".MuiTable-root");
     private final ElementsCollection allPeopleRows = allPeopleTable.$$("tbody tr");

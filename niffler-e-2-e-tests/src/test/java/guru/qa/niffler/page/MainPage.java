@@ -21,8 +21,6 @@ public class MainPage extends BasePage<MainPage> {
     private final SelenideElement historyOfSpendingsComponent =
             $(byTagAndText("h2", "History of Spendings"));
 
-    private final Header header = new Header();
-
     private final SpendingTable spendingTableComponent = new SpendingTable();
 
     @Nonnull
