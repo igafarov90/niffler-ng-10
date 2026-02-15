@@ -2,21 +2,29 @@ package guru.qa.niffler.config;
 
 public interface Config {
 
-  static Config getInstance() {
-    return LocalConfig.INSTANCE;
-  }
+    static Config getInstance() {
+        return "docker".equals(System.getProperty("test.env"))
+                ? DockerConfig.INSTANCE
+                : LocalConfig.INSTANCE;
+    }
 
-  String frontUrl();
-  String authUrl();
-  String gatewayUrl();
-  String userdataUrl();
+    String frontUrl();
 
-  String spendUrl();
+    String authUrl();
 
-  String spendJdbcUrl();
+    String gatewayUrl();
 
-  String githubUrl();
-  String authJdbcUrl();
-  String userdataJdbcUrl();
-  String currencyJdbcUrl();
+    String userdataUrl();
+
+    String spendUrl();
+
+    String spendJdbcUrl();
+
+    String githubUrl();
+
+    String authJdbcUrl();
+
+    String userdataJdbcUrl();
+
+    String currencyJdbcUrl();
 }

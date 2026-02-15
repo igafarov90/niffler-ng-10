@@ -8,6 +8,8 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +19,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
     private static final Config CFG = Config.getInstance();
@@ -39,6 +42,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<AuthorityEntity> findByUserId(UUID id) {
         List<AuthorityEntity> authorities = new ArrayList<>();
@@ -93,6 +97,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<AuthorityEntity> findAll() {
         List<AuthorityEntity> authorities = new ArrayList<>();

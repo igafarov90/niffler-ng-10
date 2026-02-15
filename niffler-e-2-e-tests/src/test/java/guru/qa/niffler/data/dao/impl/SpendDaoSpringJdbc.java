@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -16,11 +18,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class SpendDaoSpringJdbc implements SpendDao {
 
     private static final Config CFG = Config.getInstance();
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
 
+    @Nonnull
     @Override
     public SpendEntity create(SpendEntity spend) {
         KeyHolder kh = new GeneratedKeyHolder();
@@ -43,6 +47,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
         return spend;
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findById(UUID id) {
         return Optional.ofNullable(
@@ -62,6 +67,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
         );
     }
 
+    @Nonnull
     @Override
     public List<SpendEntity> findAll() {
         return jdbcTemplate.query(
@@ -70,6 +76,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
         );
     }
 
+    @Nonnull
     @Override
     public SpendEntity update(SpendEntity spend) {
         jdbcTemplate.update(
@@ -88,6 +95,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
         return spend;
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         return Optional.ofNullable(

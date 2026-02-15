@@ -7,7 +7,9 @@ import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,8 +18,8 @@ public class SpendRepositoryJdbc implements SpendRepository {
     private static final SpendDao spendDao = new SpendDaoJdbc();
     private static final CategoryDao categoryDao = new CategoryDaoJdbc();
 
+    @Nonnull
     @Override
-
     public SpendEntity create(SpendEntity spend) {
         if (spend.getCategory().getId() == null || categoryDao.findById(spend.getCategory().getId()).isEmpty()) {
             spend.setCategory(
@@ -27,36 +29,43 @@ public class SpendRepositoryJdbc implements SpendRepository {
         return spendDao.create(spend);
     }
 
+    @Nonnull
     @Override
     public SpendEntity update(SpendEntity spend) {
         return spendDao.update(spend);
     }
 
+    @Nonnull
     @Override
     public CategoryEntity updateCategory(CategoryEntity category) {
         return categoryDao.update(category);
     }
 
+    @Nonnull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         return categoryDao.create(category);
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         return categoryDao.findById(id);
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name) {
         return categoryDao.findByUsernameAndCategoryName(username, name);
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findById(UUID id) {
         return spendDao.findById(id);
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         return spendDao.findByUsernameAndSpendDescription(username, description);

@@ -4,19 +4,24 @@ import guru.qa.niffler.api.UsersApi;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.utils.RandomDataUtils;
+import io.qameta.allure.Step;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ParametersAreNonnullByDefault
 public class UsersApiClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
@@ -30,7 +35,9 @@ public class UsersApiClient implements UsersClient {
     private final UsersApi usersApi = userRetrofit.create(UsersApi.class);
     AuthApiClient authApiClient = new AuthApiClient();
 
+    @Nonnull
     @Override
+    @Step("Создать нового пользователя с именем: {username}")
     public UserJson createUser(String username, String password) {
         Response<UserJson> response;
         try {
@@ -41,10 +48,12 @@ public class UsersApiClient implements UsersClient {
         } catch (IOException e) {
             throw new AssertionError(e);
         }
-        return response.body();
+        return Objects.requireNonNull(response.body());
     }
 
+    @Nonnull
     @Override
+    @Step("POST /internal/invitations/send - Создать входящие приглашения для {targetUser.username}, количество: {count})")
     public List<UserJson> createIncomeInvitations(UserJson targetUser, int count) {
         List<UserJson> result = new ArrayList<>();
         try {
@@ -62,7 +71,9 @@ public class UsersApiClient implements UsersClient {
         return result;
     }
 
+    @Nonnull
     @Override
+    @Step("POST /internal/invitations/send - Отправить приглашение для {targetUser.username}, количество: {count}")
     public List<UserJson> createOutcomeInvitations(UserJson targetUser, int count) {
         List<UserJson> result = new ArrayList<>();
         try {
@@ -80,7 +91,9 @@ public class UsersApiClient implements UsersClient {
         return result;
     }
 
+    @Nonnull
     @Override
+    @Step("Создать друзей для {targetUser.username}, количество: {count}")
     public List<UserJson> createFriends(UserJson targetUser, int count) {
         List<UserJson> result = new ArrayList<>();
         try {

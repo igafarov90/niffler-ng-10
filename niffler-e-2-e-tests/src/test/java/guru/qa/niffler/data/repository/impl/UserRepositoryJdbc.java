@@ -9,30 +9,37 @@ import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class UserRepositoryJdbc implements UserRepository {
 
     private static final UserDao userDao = new UserDaoJdbc();
     private static final FriendshipDao friendshipDao = new FriendshipDaoJdbc();
 
+    @Nonnull
     @Override
     public UserEntity create(UserEntity user) {
         return userDao.create(user);
     }
 
+    @Nonnull
     @Override
     public Optional<UserEntity> findById(UUID id) {
         return userDao.findById(id);
     }
 
+    @Nonnull
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         return userDao.findByUsername(username);
     }
 
+    @Nonnull
     @Override
     public UserEntity update(UserEntity user) {
         return userDao.update(user);

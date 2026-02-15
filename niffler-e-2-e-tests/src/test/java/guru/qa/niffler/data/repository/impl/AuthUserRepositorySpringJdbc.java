@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,11 +21,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
     private static final Config CFG = Config.getInstance();
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
 
+    @Nonnull
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
 
@@ -72,6 +76,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         return user;
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findById(UUID userId) {
         AuthUserEntity userEntity = jdbcTemplate.query(
@@ -92,6 +97,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         return Optional.ofNullable(userEntity);
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         AuthUserEntity userEntity = jdbcTemplate.query(
@@ -118,6 +124,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         jdbcTemplate.update("DELETE FROM \"user\" WHERE id = ?", user.getId());
     }
 
+    @Nonnull
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
         jdbcTemplate.update(connection -> {
