@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static java.net.HttpURLConnection.HTTP_OK;
+import static org.apache.hc.core5.http.HttpStatus.SC_OK;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ParametersAreNonnullByDefault
@@ -127,6 +129,19 @@ public final class UserApiClient extends RestClient implements UserClient {
             throw new AssertionError(e);
         }
         return result;
+    }
+
+    @Nonnull
+    public List<UserJson> getAllUsers(String username) {
+        List<UserJson> resultList = null;
+        try {
+            Response<List<UserJson>> response = userApi.allUsers(username, null).execute();
+            assertEquals(HTTP_OK, response.code());
+            resultList = response.body();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return resultList;
     }
 }
 
