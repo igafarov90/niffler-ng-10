@@ -3,7 +3,9 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.helpers.ErrorMessages;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
 import guru.qa.niffler.utils.RandomDataUtils;
@@ -15,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class RegistrationTest {
 
     private static final String SUCCESS_REGISTER_MESSAGE = "Congratulations! You've registered!";
-    private static final String EXISTING_USER = "iegafarov";
     private static final Config CFG = Config.getInstance();
     private RegisterPage registerPage;
 
@@ -33,11 +34,12 @@ public class RegistrationTest {
         .checkSuccessRegisterMessage(SUCCESS_REGISTER_MESSAGE);
     }
 
+    @User
     @Test
-    void shouldNotRegisterUserWithExistingUsername(){
+    void shouldNotRegisterUserWithExistingUsername(UserJson user){
         String password = RandomDataUtils.randomPassword(3,12);
-        String message = ErrorMessages.usernameAlreadyExists(EXISTING_USER);
-        registerPage.fillAndSubmitRegisterForm(EXISTING_USER, password)
+        String message = ErrorMessages.usernameAlreadyExists(user.username());
+        registerPage.fillAndSubmitRegisterForm(user.username(), password)
         .checkHelperMessage(message);
     }
 
