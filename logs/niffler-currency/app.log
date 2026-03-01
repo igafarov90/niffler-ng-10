@@ -212,3 +212,8 @@ Update your application's configuration. The following values are valid:
 2026-02-26 19:22:59 INFO  n.d.b.g.s.s.AbstractGrpcServerFactory - Registered gRPC service: grpc.reflection.v1alpha.ServerReflection, bean: protoReflectionService, class: io.grpc.protobuf.services.ProtoReflectionService
 2026-02-26 19:22:59 INFO  n.d.b.g.s.s.GrpcServerLifecycle - gRPC Server started, listening on address: *, port: 8092
 2026-02-26 19:22:59 INFO  g.q.n.NifflerCurrencyApplication - Started NifflerCurrencyApplication in 5.25 seconds (process running for 5.793)
+2026-02-26 23:18:44 WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m44s253ms208µs600ns).
+2026-02-26 23:19:58 INFO  n.d.b.g.s.s.GrpcServerLifecycle - Completed gRPC server shutdown
+2026-02-26 23:19:58 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-26 23:19:58 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-26 23:19:58 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
