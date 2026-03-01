@@ -35,6 +35,8 @@ spring:
       enabled: false
 logging:
   level:
+    file:
+      path: ./logs/niffler-userdata
     root: INFO
     org.springframework.kafka: INFO
     org.springframework.web: INFO
