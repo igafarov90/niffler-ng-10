@@ -35,6 +35,8 @@ spring:
       enabled: false
 logging:
   level:
+    file:
+      path: ./logs/niffler-spend
     root: INFO
     org.springframework.web: INFO
     org.springframework.security: INFO

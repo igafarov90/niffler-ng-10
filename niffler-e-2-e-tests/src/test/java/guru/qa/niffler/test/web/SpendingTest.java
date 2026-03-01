@@ -15,6 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.io.IOException;
+
 import static com.codeborne.selenide.Selenide.open;
 
 @ExtendWith(
@@ -73,7 +75,7 @@ public class SpendingTest {
     @Test
     @DisplayName("Добавление новой траты")
     @User
-    public void addNewSpending(UserJson user) {
+    public void addNewSpending(UserJson user) throws IOException {
         String description = RandomDataUtils.randomSentence(2);
         open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password())

@@ -9,6 +9,8 @@ spring:
       enabled: false
 logging:
   level:
+    file:
+      path: ./logs/niffler-gateway
     root: INFO
     org.springframework.web: INFO
     org.springframework.security: INFO
