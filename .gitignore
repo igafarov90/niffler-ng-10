@@ -43,3 +43,7 @@ out/
 /niffler-grpc-common/src/generated/**
 /niffler-e-2-e-tests/.screen-output/**
 tmlog*
+
+# Логи приложений
+logs/
+

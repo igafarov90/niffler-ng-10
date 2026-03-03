@@ -20,6 +20,7 @@ buildscript {
         fakerVersion = '1.0.2'
         assertjVersion = '3.27.5'
         atomicosVersion = '6.0.0'
+        ashotVersion = '1.5.4'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
                 : "http://localhost:8089/ws/userdata.wsdl"
@@ -129,7 +130,7 @@ dependencies {
     testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
     // Wiremock
     testImplementation "org.wiremock:wiremock:${project.ext.wiremockVersion}"
-    //Assertj
+    // Assertj
     testImplementation "org.assertj:assertj-core:${project.ext.assertjVersion}"
     // Lombok
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"

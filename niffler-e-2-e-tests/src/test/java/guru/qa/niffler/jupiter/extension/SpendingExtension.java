@@ -48,7 +48,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                                     new Date(),
                                     new CategoryJson(
                                             null,
-                                            RandomDataUtils.randomCategoryName(),
+                                            spendingAnnotation.category(),
                                             username,
                                             false
                                     ),
@@ -66,7 +66,6 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                             testUser.get().testData().spendings().addAll(
                                     result
                             );
-
                         } else {
                             context.getStore(NAMESPACE).put(
                                     context.getUniqueId(),
