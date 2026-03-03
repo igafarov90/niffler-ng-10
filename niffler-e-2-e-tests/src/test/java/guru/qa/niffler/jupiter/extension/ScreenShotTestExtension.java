@@ -2,7 +2,7 @@ package guru.qa.niffler.jupiter.extension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
-import guru.qa.niffler.model.allure.ScreenDif;
+import guru.qa.niffler.model.allure.ScreenDiff;
 import io.qameta.allure.Allure;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.extension.*;
@@ -55,7 +55,7 @@ public class ScreenShotTestExtension implements BeforeEachCallback, AfterEachCal
 
         ScreenShotTest annotation = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
 
-        ScreenDif screenDif = new ScreenDif(
+        ScreenDiff screenDiff = new ScreenDiff(
                 "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(expected)),
                 "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(actual)),
                 "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(diff))
@@ -64,7 +64,7 @@ public class ScreenShotTestExtension implements BeforeEachCallback, AfterEachCal
         Allure.addAttachment(
                 "Screenshot diff",
                 "application/vnd.allure.image.diff",
-                mapper.writeValueAsString(screenDif)
+                mapper.writeValueAsString(screenDiff)
         );
 
         if (annotation != null && annotation.rewriteExpected()) {

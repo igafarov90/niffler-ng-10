@@ -13,13 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Selenide.open;
 
-@ExtendWith(
-        {
-                TestMethodContextExtension.class,
-                BrowserExtension.class
-        }
-)
-
+@ExtendWith({TestMethodContextExtension.class,BrowserExtension.class})
 public class FriendsTest {
     private static final Config CFG = Config.getInstance();
 
