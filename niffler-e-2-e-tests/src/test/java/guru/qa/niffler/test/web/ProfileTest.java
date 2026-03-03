@@ -16,12 +16,7 @@ import static com.codeborne.selenide.Selenide.open;
 import static guru.qa.niffler.helpers.SnackbarMessages.PROFILE_UPDATED;
 
 
-@ExtendWith(
-        {
-                TestMethodContextExtension.class,
-                BrowserExtension.class
-        }
-)
+@ExtendWith({TestMethodContextExtension.class, BrowserExtension.class})
 public class ProfileTest {
 
     private final static Config CFG = Config.getInstance();
