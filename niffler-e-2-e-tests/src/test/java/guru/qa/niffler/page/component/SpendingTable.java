@@ -4,6 +4,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.page.EditSpendingPage;
+import guru.qa.niffler.page.MainPage;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
@@ -52,13 +53,13 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
 
     @Nonnull
     @Step("Удалить трату {description}")
-    public SpendingTable deleteSpending(String description) {
+    public MainPage deleteSpending(String description) {
         searchSpendingByDescription(description);
         var row = spendingRows.find(text(description));
         row.$$("td").get(0).click();
         deleteBtn.click();
         popup.find(byText("Delete")).click();
-        return this;
+        return new MainPage();
     }
 
     @Nonnull
@@ -70,14 +71,14 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
 
     @Nonnull
     @Step("Проверить, что в таблице присутствуют траты")
-    public SpendingTable checkTableContains(String... expectedSpends) {
+    public MainPage checkTableContains(String... expectedSpends) {
         for (int i = 0; i < expectedSpends.length; i++) {
             var expected = expectedSpends[i];
             searchField.clearIfNotEmpty();
             searchSpendingByDescription(expected);
             spendingRows.find(text(expected));
         }
-        return this;
+        return new MainPage();
     }
 
     @Nonnull
