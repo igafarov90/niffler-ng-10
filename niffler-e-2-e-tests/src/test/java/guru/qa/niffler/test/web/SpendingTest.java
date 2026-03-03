@@ -19,12 +19,7 @@ import java.io.IOException;
 
 import static com.codeborne.selenide.Selenide.open;
 
-@ExtendWith(
-        {
-                TestMethodContextExtension.class,
-                BrowserExtension.class
-        }
-)
+@ExtendWith({TestMethodContextExtension.class, BrowserExtension.class})
 public class SpendingTest {
 
     private static final Config CFG = Config.getInstance();
