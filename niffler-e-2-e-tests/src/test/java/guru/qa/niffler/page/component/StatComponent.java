@@ -32,13 +32,19 @@ public class StatComponent extends BaseComponent<StatComponent>{
     }
 
     private final ElementsCollection bubbles = self.$("#legend-container").$$("li");
-    private final SelenideElement statisticCanvas = $("canvas[role='img']");
+    private final SelenideElement chart = $("canvas[role='img']");
+
+    @Nonnull
+    public BufferedImage chartScreenshot() throws IOException {
+       return ImageIO.read(Objects.requireNonNull(chart.screenshot()));
+
+    }
 
     @Step("Проверить визуальное совпадение диаграммы")
     @Nonnull
     public StatComponent assertChartScreenshotMatches(BufferedImage expected) throws IOException {
         Selenide.sleep(2000);
-        BufferedImage actual = ImageIO.read(Objects.requireNonNull(statisticCanvas.screenshot()));
+        BufferedImage actual = chartScreenshot();
 
         assertFalse(new ScreenDiffResult(actual, expected));
         return this;
@@ -48,7 +54,7 @@ public class StatComponent extends BaseComponent<StatComponent>{
     @Nonnull
     public StatComponent assertChartStatisticsIsUpdated(BufferedImage expected) throws IOException {
         Selenide.sleep(2000);
-        BufferedImage actual = ImageIO.read(Objects.requireNonNull(statisticCanvas.screenshot()));
+        BufferedImage actual = chartScreenshot();
 
         assertTrue(new ScreenDiffResult(actual, expected));
         return this;
@@ -68,10 +74,10 @@ public class StatComponent extends BaseComponent<StatComponent>{
         return this;
     }
 
-    @Step("Проверить цвет в ячейке статистики {0}")
-    @Nonnull
-    public StatComponent checkStatisticBubblesContains(Color color) {
-        bubbles.first().should(color(color));
-        return this;
-    }
+//    @Step("Проверить цвет в ячейке статистики {0}")
+//    @Nonnull
+//    public StatComponent checkStatisticBubblesContains(Color color) {
+//        bubbles.first().should(color(color));
+//        return this;
+//    }
 }
