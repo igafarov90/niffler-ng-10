@@ -49,43 +49,45 @@ public class ScreenShotTestExtension implements BeforeEachCallback, AfterEachCal
 
     @Override
     public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
-        BufferedImage expected = getExpected();
-        BufferedImage actual = getActual();
-        BufferedImage diff = getDiff();
+        if (throwable.getMessage().contains("Screen comparison failure")) {
+            BufferedImage expected = getExpected();
+            BufferedImage actual = getActual();
+            BufferedImage diff = getDiff();
 
-        ScreenShotTest annotation = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+            ScreenShotTest annotation = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
 
-        ScreenDiff screenDiff = new ScreenDiff(
-                "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(expected)),
-                "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(actual)),
-                "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(diff))
-        );
+            ScreenDiff screenDiff = new ScreenDiff(
+                    "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(expected)),
+                    "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(actual)),
+                    "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(diff))
+            );
 
-        Allure.addAttachment(
-                "Screenshot diff",
-                "application/vnd.allure.image.diff",
-                mapper.writeValueAsString(screenDiff)
-        );
+            Allure.addAttachment(
+                    "Screenshot diff",
+                    "application/vnd.allure.image.diff",
+                    mapper.writeValueAsString(screenDiff)
+            );
 
-        if (annotation != null && annotation.rewriteExpected()) {
-            if (getActual() != null) {
-                String projectRoot = System.getProperty("user.dir");
-                boolean inRootProject = new File(projectRoot, "niffler-e-2-e-tests").exists();
-                File output;
+            if (annotation != null && annotation.rewriteExpected()) {
+                if (getActual() != null) {
+                    String projectRoot = System.getProperty("user.dir");
+                    boolean inRootProject = new File(projectRoot, "niffler-e-2-e-tests").exists();
+                    File output;
 
-                if (inRootProject) {
-                    output = new File(projectRoot + "/niffler-e-2-e-tests/src/test/resources/" + annotation.value());
+                    if (inRootProject) {
+                        output = new File(projectRoot + "/niffler-e-2-e-tests/src/test/resources/" + annotation.value());
+                    } else {
+                        output = new File(projectRoot + "/src/test/resources/" + annotation.value());
+                    }
+                    ImageIO.write(getActual(), "png", output);
+                    System.out.println("Expected screenshot was rewritten: " + output.getAbsolutePath());
+
+                    throw new AssertionError(
+                            "Expected screenshot was rewritten. Please re-run the test to verify the new baseline."
+                    );
                 } else {
-                    output = new File(projectRoot + "/src/test/resources/" + annotation.value());
+                    System.out.println("Cannot rewrite expected screenshot: actual image is null");
                 }
-                ImageIO.write(getActual(), "png", output);
-                System.out.println("Expected screenshot was rewritten: " + output.getAbsolutePath());
-
-                throw new AssertionError(
-                        "Expected screenshot was rewritten. Please re-run the test to verify the new baseline."
-                );
-            } else {
-                System.out.println("Cannot rewrite expected screenshot: actual image is null");
             }
         }
         throw throwable;

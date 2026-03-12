@@ -2,6 +2,7 @@ package guru.qa.niffler.test.web;
 
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.helpers.SnackbarMessages;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
@@ -9,11 +10,13 @@ import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.TestMethodContextExtension;
+import guru.qa.niffler.model.Bubble;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.awt.image.BufferedImage;
@@ -33,6 +36,7 @@ public class ScreenshotTest {
         open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password())
                 .checkThatPageLoaded()
+                .getStatComponent()
                 .assertChartScreenshotMatches(expected);
     }
 
@@ -52,8 +56,8 @@ public class ScreenshotTest {
                 .getSpendingTableComponent()
                 .deleteSpending(user.testData().spendings().getFirst().description())
                 .checkSnackBarText(SnackbarMessages.SPENDING_DELETED)
-                .assertChartScreenshotMatches(expected)
-                .checkLegendCount(0);
+                .getStatComponent()
+                .assertChartScreenshotMatches(expected);
     }
 
     @DisplayName("Диаграмма статистики должна обновится после добавления новой траты")
@@ -78,8 +82,9 @@ public class ScreenshotTest {
                 .setSpendingDescription(description)
                 .save()
                 .checkSnackBarText(SnackbarMessages.SPENDING_CREATED)
+                .getStatComponent()
                 .assertChartStatisticsIsUpdated(expected)
-                .checkLegendCount(2);
+                .checkBubblesCount(2);
     }
 
     @DisplayName("Диаграмма статистики не должна обновиться после добавления траты в архив")
@@ -109,9 +114,9 @@ public class ScreenshotTest {
                 .archiveCategory(user.testData().spendings().getFirst().category().name())
                 .checkSnackBarText(user.testData().spendings().getFirst().category().name())
                 .returnToMainPage()
+                .getStatComponent()
                 .assertChartScreenshotMatches(expected)
-                .checkLegendCount(2)
-                .checkCategoryInLegendContainsText("Archived");
+                .checkBubblesCount(2);
     }
 
     @User
@@ -137,5 +142,105 @@ public class ScreenshotTest {
                 .getHeader()
                 .toProfilePage()
                 .rewriteProfileIcon(expected);
+    }
+
+    @User(
+            spendings = {
+                    @Spending(
+                            category = "sport",
+                            amount = 5550,
+                            currency = CurrencyValues.RUB,
+                            description = "Description 1"
+                    ),
+                    @Spending(
+                            category = "music",
+                            amount = 2000,
+                            currency = CurrencyValues.RUB,
+                            description = "Description 2"
+                    )
+            }
+    )
+
+    @Test
+    @DisplayName("Проверка бабблов статистики в точном порядке")
+    public void checkStatBubblesExactOrder(UserJson user) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .getStatComponent()
+                .checkBubbles(
+                        new Bubble(Color.YELLOW, "sport 5550 ₽"),
+                        new Bubble(Color.GREEN, "music 2000 ₽")
+                );
+    }
+
+    @User(
+            spendings = {
+                    @Spending(
+                            category = "music",
+                            amount = 2000,
+                            currency = CurrencyValues.RUB,
+                            description = "Description 2"
+                    ),
+                    @Spending(
+                            category = "sport",
+                            amount = 5550,
+                            currency = CurrencyValues.RUB,
+                            description = "Description 1"
+                    )
+            }
+    )
+
+    @Test
+    @DisplayName("Проверка наличия конкретного баббла в статистике")
+    public void checkStatBubblesContainsCategory(UserJson user) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .getStatComponent()
+                .checkBubblesContains(
+                        new Bubble(Color.YELLOW, "sport 5550 ₽")
+                );
+    }
+
+    @User(
+            spendings = {
+                    @Spending(
+                            category = "music",
+                            amount = 2000,
+                            currency = CurrencyValues.RUB,
+                            description = "Description 2"
+                    ),
+                    @Spending(
+                            category = "sport",
+                            amount = 5550,
+                            currency = CurrencyValues.RUB,
+                            description = "Description 1"
+                    ),
+                    @Spending(
+                            category = "car",
+                            amount = 7000,
+                            currency = CurrencyValues.RUB,
+                            description = "Description 1"
+                    ),
+                    @Spending(
+                            category = "food",
+                            amount = 75000,
+                            currency = CurrencyValues.RUB,
+                            description = "Description 1"
+                    )
+            }
+    )
+
+    @Test
+    @DisplayName("Проверка бабблов статистики в произвольном порядке")
+    public void checkStatBubblesAnyOrder(UserJson user) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .getStatComponent()
+                .checkBubblesInAnyOrder(
+                        new Bubble(Color.BLUE100, "sport 5550 ₽"),
+                        new Bubble(Color.GREEN, "car 7000 ₽"),
+                        new Bubble(Color.YELLOW, "food 75000 ₽"),
+                        new Bubble(Color.ORANGE, "music 2000 ₽")
+                );
     }
 }
