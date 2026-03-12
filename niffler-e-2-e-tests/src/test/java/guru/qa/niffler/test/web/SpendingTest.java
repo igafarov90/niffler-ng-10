@@ -85,4 +85,24 @@ public class SpendingTest {
                 .getSpendingTableComponent()
                 .checkTableContains(description);
     }
+
+    @Test
+    @DisplayName("Проверка отображения траты в таблице")
+    @User(
+            spendings = {
+                    @Spending(
+                            category = "music",
+                            amount = 2000,
+                            currency = CurrencyValues.RUB,
+                            description = "Description 2"
+                    )
+            }
+    )
+    public void check(UserJson user) {
+        open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .checkThatPageLoaded()
+                .getSpendingTableComponent()
+                .checkSpends(user.testData().spendings().getFirst());
+    }
 }
