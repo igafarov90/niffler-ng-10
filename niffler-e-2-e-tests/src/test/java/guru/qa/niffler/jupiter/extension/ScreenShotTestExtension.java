@@ -26,7 +26,7 @@ public class ScreenShotTestExtension implements BeforeEachCallback, AfterEachCal
     public void beforeEach(ExtensionContext context) {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), ScreenShotTest.class)
                 .ifPresent(anno -> {
-                    context.getStore(NAMESPACE).put(context.getUniqueId(), anno.value());
+                    context.getStore(NAMESPACE).put(context.getUniqueId(), anno);
                 });
     }
 
@@ -53,7 +53,7 @@ public class ScreenShotTestExtension implements BeforeEachCallback, AfterEachCal
         BufferedImage actual = getActual();
         BufferedImage diff = getDiff();
 
-        ScreenShotTest annotation = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+        ScreenShotTest annotation = context.getStore(NAMESPACE).get(context.getUniqueId(), ScreenShotTest.class);
 
         ScreenDiff screenDiff = new ScreenDiff(
                 "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(expected)),
